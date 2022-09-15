@@ -1,0 +1,4 @@
+[submodule "designer"]
+	path = designer
+	url = https://github.com/Augmenta-tech/Camera-Simulation
+	branch = beta
