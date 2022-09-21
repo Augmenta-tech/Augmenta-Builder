@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="cache-control" content="no-store">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./designer/css/main.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="shortcut icon" href="#">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <title>Augmenta builder (beta)</title>
+    <link rel="icon" href="designer/img/augmenta-logo.png" type="image/png">
+  </head>
+
+  <body>
+
+    <div id="augmenta-builder" class="column full-height">
+
+      <!-- HEADER/VIEWPORT - TOP -->
+      <div id="top-section" class="column">
+
+        <!-- VIEWPORT -->
+        <div id="viewport">
+
+          <!-- VIEWPORT BUTTONS -->
+          <div id="viewport-buttons" class="row">
+            <!-- UNITS BUTTON -->
+            <div id="toggle-unit-button" class="button main-button">
+              <span class="iconify main-icon" data-icon="codicon:arrow-both"></span>
+              <p id="toggle-unit-button-m" class="bold-font">m</p><p> / </p><p id="toggle-unit-button-ft">ft</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INSPECTOR - RIGHT -->
+      <div id="bottom-section">
+
+        <!-- TABS -->
+        <div id="builder-tabs" class="row center-x">
+          <div id="setup-tab" class="column center-x tab passed-tab">
+            <h3>Setup</h3>
+            <hr class="tab-line">
+          </div>
+          <div id="dimensions-tab" class="column center-x tab">
+            <h3>Dimensions</h3>
+            <hr class="tab-line">
+          </div>
+          <div id="hardwares-tab" class="column center-x tab">
+            <h3>Hardwares</h3>
+            <hr class="tab-line">
+          </div>
+          <div id="my-system-tab" class="column center-x tab">
+            <h3>My system</h3>
+            <hr class="tab-line">
+          </div>
+        </div>
+
+        <!-- SETUP CONTENT -->
+        <div id="setup-content" class="column builder-section">
+          <!-- TRACKING MODE SELECTION -->
+          <div id="tracking-mode-selection-builder" class="row center-x center-y builder-section-content">
+            <label>
+              <input type="radio" name="tracking-mode-selection-builder" value="human-tracking" checked>
+              <img src="img/floor-tracking.png" alt="Human tracking">
+            </label>
+            <label>
+              <input type="radio" name="tracking-mode-selection-builder" value="hand-tracking">
+              <img src="img/table-tracking.png" alt="Hand tracking">
+            </label>
+            <label>
+              <input type="radio" name="tracking-mode-selection-builder" value="wall-tracking">
+              <img src="img/wall-tracking.png" alt="Wall tracking">
+            </label>
+          </div>
+
+          <!-- SETUP BUTTONS-->
+          <div class="row center-x center-y builder-section-buttons">
+            <!-- NEXT BUTTON -->
+            <div id="next-button-setup" class="builder-button builder-main-button">
+              <p id="next-button-setup-text" class="bold-font"> NEXT </p>
+              <span class="iconify" data-icon="dashicons:arrow-right-alt2"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIMENSIONS CONTENT -->
+        <div id="dimensions-content" class="column builder-section hidden">
+          <!-- DIMENSIONS INPUTS -->
+          <div id="dimensions-section-builder" class="column center-x builder-section-content">
+            <div id="gizmo-helper-image" class="row center-x center-y">
+              <img src="img/gizmo-helper.png" alt="Gizmo helper">
+            </div>
+            <div id="dimensions-inputs" class="row center-x">
+              <div id="dimensions-width" class="column">
+                <div id="dimensions-width-text" class="column">
+                  <p>Width (<span data-unittext="1">m</span>)</p>
+                </div>
+                <div id="dimensions-width-input" class="column">
+                  <input type="text" placeholder="Width" min="0" max="100" step="0.1">
+                </div>
+              </div>
+              <div id="dimensions-length" class="column">
+                <div id="dimensions-length-text" class="column">
+                  <p>Length (<span data-unittext="1">m</span>)</p>
+                </div>
+                <div id="dimensions-length-input" class="column">
+                  <input type="text" placeholder="Length" min="0" max="100" step="0.1">
+                </div>
+              </div>
+              <div id="dimensions-distance" class="column">
+                <div id="dimensions-distance-text" class="column">
+                  <p>Sensor height (<span data-unittext="1">m</span>)</p>
+                </div>
+                <div id="dimensions-distance-input" class="column">
+                  <input type="text" placeholder="Sensor height" min="0" max="20" step="0.1">
+                </div>
+              </div>
+            </div>
+            <div id="dimensions-warning-message" class="row hidden">
+              <p id="dimensions-warning-text">No hardware setup found,</p><p id="dimensions-warning-button" class="text-button">click here to get in touch with our experts.</p>
+            </div>
+          </div>
+          <!-- DIMENSIONS BUTTONS-->
+          <div class="row center-x center-y builder-section-buttons">
+            <!-- PREVIOUS BUTTON -->
+            <div id="previous-button-dimensions" class="builder-button builder-secondary-button">
+              <p id="previous-button-dimensions-text" class="bold-font"> PREVIOUS </p>
+            </div>
+            <!-- NEXT BUTTON -->
+            <div id="next-button-dimensions" class="builder-button builder-main-button">
+              <p id="next-button-dimensions-text" class="bold-font"> NEXT </p>
+              <span class="iconify" data-icon="dashicons:arrow-right-alt2"></span>
+            </div>
+          </div>
+          <!-- NEED SOMETHING DIFFERENT BUTTON -->
+          <div id="dimensions-need-something-different-button" class="row center-x">
+            <p id="dimensions-need-something-different-button" class="text-button">Need something different ?</p>
+          </div>
+        </div>
+
+        <!-- HARDWARES CONTENT -->
+        <div id="hardwares-content" class="column builder-section hidden">
+          <!-- HARDWARES SELECTION -->
+          <div id="hardwares-section-builder" class="row center-x center-y builder-section-content">
+          </div>
+          <!-- HARDWARES BUTTONS-->
+          <div class="row center-x center-y builder-section-buttons">
+            <!-- PREVIOUS BUTTON -->
+            <div id="previous-button-hardwares" class="builder-button builder-secondary-button">
+              <p id="previous-button-hardwares-text" class="bold-font"> PREVIOUS </p>
+            </div>
+            <!-- NEXT BUTTON -->
+            <div id="next-button-hardwares" class="builder-button builder-main-button">
+              <p id="next-button-hardwares-text" class="bold-font"> NEXT </p>
+              <span class="iconify" data-icon="dashicons:arrow-right-alt2"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- MY SYSTEM CONTENT -->
+        <div id="my-system-content" class="column builder-section hidden">
+          <!-- RECAP -->
+          <div id="my-system-section-builder" class="row center-x center-y builder-section-content">
+          </div>
+          <!-- MY SYSTEM BUTTONS-->
+          <div class="row center-x center-y builder-section-buttons">
+            <!-- PREVIOUS BUTTON -->
+            <div id="previous-button-my-system" class="builder-button builder-secondary-button">
+              <p id="previous-button-my-system-text" class="bold-font"> PREVIOUS </p>
+            </div>
+            <!-- REQUEST QUOTE BUTTON -->
+            <div id="request-quote-button-my-system" class="builder-button builder-main-button">
+              <p id="request-quote-button-my-system-text" class="bold-font"> REQUEST A QUOTE </p>
+            </div>
+          </div>
+        </div>
+
+        <hr class="bottom-line">
+      </div> 
+    </div>
+
+    <!-- Beta style management -->
+    <script>
+      //document.getElementById('bottom-section').classList.add('dark-mode');
+      /* DARK MODE */
+      /*const bottomChilds = document.getElementById('bottom-section').getElementsByTagName("*");
+      for(let i = 0; i < bottomChilds.length; i++)
+      {
+        bottomChilds[i].classList.add('dark-mode');
+      }*/
+    </script>
+
+  </body>
+
+  <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
+  <!-- Import maps polyfill -->
+  <!-- Remove this when import maps will be widely supported -->
+  <script type="esms-options">{ "polyfillEnable": ["json-modules"] }</script>
+  <script async src="https://ga.jspm.io/npm:es-module-shims@1.5.9/dist/es-module-shims.js"></script>
+  
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./designer/js/lib/three-js/build/three.module.js",
+        "three-loaders/": "./designer/js/lib/three-js/examples/jsm/loaders/",
+        "three-text-geometry": "./designer/js/lib/three-js/examples/jsm/geometries/TextGeometry.js",
+        "polybool": "./designer/js/lib/polybooljs/dist/polybool.min.js"
+      }
+    }
+  </script> 
+
+  <script type="module" src="js/main.js"></script>
+</html>
