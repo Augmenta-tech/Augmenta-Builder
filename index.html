@@ -37,44 +37,47 @@
       </div>
 
       <!-- INSPECTOR - RIGHT -->
-      <div id="bottom-section">
+      <div id="bottom-section" class="column center-x">
 
         <!-- TABS -->
         <div id="builder-tabs" class="row center-x">
           <div id="setup-tab" class="column center-x tab passed-tab">
             <h3>Setup</h3>
-            <hr class="tab-line">
+            <div class="tab-line"></div>
           </div>
           <div id="dimensions-tab" class="column center-x tab">
             <h3>Dimensions</h3>
-            <hr class="tab-line">
+            <div class="tab-line"></div>
           </div>
           <div id="hardwares-tab" class="column center-x tab">
             <h3>Hardwares</h3>
-            <hr class="tab-line">
+            <div class="tab-line"></div>
           </div>
           <div id="my-system-tab" class="column center-x tab">
             <h3>My system</h3>
-            <hr class="tab-line">
+            <div class="tab-line"></div>
           </div>
         </div>
 
         <!-- SETUP CONTENT -->
         <div id="setup-content" class="column builder-section">
           <!-- TRACKING MODE SELECTION -->
-          <div id="tracking-mode-selection-builder" class="row center-x center-y builder-section-content">
-            <label>
+          <div id="tracking-mode-selection-builder" class="row wrap center-x center-y builder-section-content">
+            <label id="tracking-mode-human-tracking-input" class="tracking-mode-choice">
               <input type="radio" name="tracking-mode-selection-builder" value="human-tracking" checked>
-              <img src="img/floor-tracking.png" alt="Human tracking">
+              <img id="human-tracking-img" src="img/floor-tracking.png" alt="Human tracking">
             </label>
-            <label>
+            <label id="tracking-mode-hand-tracking-input" class="tracking-mode-choice">
               <input type="radio" name="tracking-mode-selection-builder" value="hand-tracking">
-              <img src="img/table-tracking.png" alt="Hand tracking">
+              <img id="hand-tracking-img" src="img/table-tracking.png" alt="Hand tracking">
             </label>
-            <label>
+            <label id="tracking-mode-wall-tracking-input" class="tracking-mode-choice">
               <input type="radio" name="tracking-mode-selection-builder" value="wall-tracking">
-              <img src="img/wall-tracking.png" alt="Wall tracking">
+              <img id="wall-tracking-img" src="img/wall-tracking.png" alt="Wall tracking">
             </label>
+          </div>
+          <div id="setup-warning-message" class="row hidden">
+            <p id="setup-warning-text" class="warning-text">Please choose a surface to track</p>
           </div>
 
           <!-- SETUP BUTTONS-->
@@ -90,38 +93,38 @@
         <!-- DIMENSIONS CONTENT -->
         <div id="dimensions-content" class="column builder-section hidden">
           <!-- DIMENSIONS INPUTS -->
-          <div id="dimensions-section-builder" class="column center-x builder-section-content">
+          <div id="dimensions-section-builder" class="column builder-section-content">
             <div id="gizmo-helper-image" class="row center-x center-y">
               <img src="img/gizmo-helper.png" alt="Gizmo helper">
             </div>
-            <div id="dimensions-inputs" class="row center-x">
+            <div id="dimensions-inputs" class="row wrap center-x center-y dimensions-inputs">
               <div id="dimensions-width" class="column">
-                <div id="dimensions-width-text" class="column">
-                  <p>Width (<span data-unittext="1">m</span>)</p>
+                <div class="column">
+                  <p id="dimensions-width-text">Width (<span data-unittext="1">m</span>)</p>
                 </div>
-                <div id="dimensions-width-input" class="column">
-                  <input type="text" placeholder="Width" min="0" max="100" step="0.1">
+                <div class="column">
+                  <input id="dimensions-width-input" type="text" placeholder="Width" min="0" max="100" step="0.1">
                 </div>
               </div>
               <div id="dimensions-length" class="column">
-                <div id="dimensions-length-text" class="column">
-                  <p>Length (<span data-unittext="1">m</span>)</p>
+                <div class="column">
+                  <p id="dimensions-length-text">Length (<span data-unittext="1">m</span>)</p>
                 </div>
-                <div id="dimensions-length-input" class="column">
-                  <input type="text" placeholder="Length" min="0" max="100" step="0.1">
+                <div class="column">
+                  <input id="dimensions-length-input" type="text" placeholder="Length" min="0" max="100" step="0.1">
                 </div>
               </div>
               <div id="dimensions-distance" class="column">
-                <div id="dimensions-distance-text" class="column">
-                  <p>Sensor height (<span data-unittext="1">m</span>)</p>
+                <div class="column">
+                  <p id="dimensions-distance-text">Sensor height (<span data-unittext="1">m</span>)</p>
                 </div>
-                <div id="dimensions-distance-input" class="column">
-                  <input type="text" placeholder="Sensor height" min="0" max="20" step="0.1">
+                <div class="column">
+                  <input id="dimensions-distance-input" type="text" placeholder="Sensor height" min="0" max="20" step="0.1">
                 </div>
               </div>
             </div>
             <div id="dimensions-warning-message" class="row hidden">
-              <p id="dimensions-warning-text">No hardware setup found,</p><p id="dimensions-warning-button" class="text-button">click here to get in touch with our experts.</p>
+              <p id="dimensions-warning-text" class="warning-text">No hardware setup found,</p><p id="dimensions-warning-button" class="text-button">click here to get in touch with our experts.</p>
             </div>
           </div>
           <!-- DIMENSIONS BUTTONS-->
@@ -145,7 +148,29 @@
         <!-- HARDWARES CONTENT -->
         <div id="hardwares-content" class="column builder-section hidden">
           <!-- HARDWARES SELECTION -->
-          <div id="hardwares-section-builder" class="row center-x center-y builder-section-content">
+          <div id="hardwares-section-builder" class="column center-x center-y builder-section-content">
+            <div id="hardwares-switch-indoor-outdoor" class="row center-x center-y">
+              <label class="hardwares-radio-label">
+                <input id="hardwares-input-radio-indoor" type="radio" name="switch-indoor-outdoor-builder" value="indoor" checked>
+                <div class="row center-x center-y hardwares-switch">
+                  <p>Indoor</p>
+                </div>
+              </label>
+              <label class="hardwares-radio-label">
+                <input id="hardwares-input-radio-outdoor" type="radio" name="switch-indoor-outdoor-builder" value="outdoor">
+                <div class="row center-x center-y hardwares-switch">
+                  <p>Outdoor</p>
+                </div>
+              </label>
+            </div>
+            <div id="hardwares-sensors-section" class="row center-x center-y">
+              <div id="hardwares-sensors-selection" class="row wrap center-x center-y">
+                <!-- FILLED IN JS WITH CORRECT SENSORS -->
+              </div>
+              <div id="hardwares-warning-message" class="row hidden">
+                <p id="hardwares-warning-text">No hardware setup found,</p><p id="hardwares-warning-button" class="text-button">click here to get in touch with our experts.</p>
+              </div>
+            </div>
           </div>
           <!-- HARDWARES BUTTONS-->
           <div class="row center-x center-y builder-section-buttons">
@@ -159,12 +184,28 @@
               <span class="iconify" data-icon="dashicons:arrow-right-alt2"></span>
             </div>
           </div>
+          <!-- NEED SOMETHING DIFFERENT BUTTON -->
+          <div id="hardwares-need-something-different-button" class="row center-x">
+            <p id="hardwares-need-something-different-button" class="text-button">Need something different ?</p>
+          </div>
         </div>
 
         <!-- MY SYSTEM CONTENT -->
         <div id="my-system-content" class="column builder-section hidden">
           <!-- RECAP -->
           <div id="my-system-section-builder" class="row center-x center-y builder-section-content">
+            <div id="my-system-tracking-mode" class="column center-x center-y my-system-section my-system-line">
+
+            </div>
+            <div id="my-system-dimensions" class="column center-x center-y my-system-section my-system-line">
+
+            </div>
+            <div id="my-system-hardwares" class="column center-x center-y my-system-section my-system-line">
+
+            </div>
+            <div id="my-system-recap" class="column center-x center-y my-system-section">
+
+            </div>
           </div>
           <!-- MY SYSTEM BUTTONS-->
           <div class="row center-x center-y builder-section-buttons">
@@ -179,7 +220,7 @@
           </div>
         </div>
 
-        <hr class="bottom-line">
+        <div class="bottom-line"></div>
       </div> 
     </div>
 
