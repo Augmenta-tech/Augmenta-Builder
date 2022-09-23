@@ -168,13 +168,17 @@ p {
 /** SETUP SECTION **/
 
 /*SETUP IMAGES STYLE */
-.tracking-mode-choice [type=radio] + img {
+.tracking-mode-choice > img {
   cursor: pointer;
   height: 12vh;
   padding: 2vh;
   outline: 1px solid var(--color-grey-unselected);
   border-radius: 4px;
   margin: 2vh;
+}
+
+#tracking-mode-advanced > img{
+  outline: 0;
 }
 
 .tracking-mode-choice [type=radio]:disabled  + img {
@@ -314,13 +318,24 @@ p {
 }
 
 .dimensions-inputs input:read-only {
+  cursor: default;
   color: var(--color-grey-text);
 }
 
-#my-system-hardwares .hardwares-sensors-type.unselectable [type=radio] + div{
+#my-system-hardwares .hardwares-sensors-type [type=radio] + div{
+  cursor: default;
   width: 20vh;
 }
 
 #my-system-recap{
   padding-left: 4vh;
+}
+
+#request-quote-button-my-system{
+  border-radius: 100px;
+  background-color: var(--color-blue-buttons);
+}
+
+#request-quote-button-my-system p{
+  color: var(--color-grey-background);
 }

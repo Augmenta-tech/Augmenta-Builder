@@ -6,7 +6,7 @@ import { SceneManager } from '../designer/js/scene/SceneManager.js';
 import { calculateCameraConfig, calculateLidarConfig, checkCameraCoherence, checkLidarCoherence, createSceneFromCameraConfig, createSceneFromLidarConfig, getMaxFarFromSensors } from '../designer/js/UI/Wizard.js';
 import { ViewportManager } from '../designer/js/ViewportManager.js';
 
-ViewportManager.DEFAULT_CAM_POSITION = new Vector3(5, 6, 12);
+ViewportManager.DEFAULT_CAM_POSITION = new Vector3(-2, 8, 10);
 SceneManager.DEFAULT_WIDTH = 10;
 const main = new Engine(true);
 const sceneManager = main.viewportManager.sceneManager;
@@ -66,6 +66,14 @@ for(let i = 0; i < trackingModes.length; i++)
         document.getElementById('setup-warning-message').classList.add('hidden');
     });
 }
+document.getElementById('tracking-mode-advanced').addEventListener('click', () => {
+    const trackingModeChoices = document.getElementById('tracking-mode-selection-builder').children;
+    for(let i = 0; i < trackingModeChoices.length; i++)
+    {
+        trackingModeChoices[i].classList.remove('hidden');
+    }
+    document.getElementById('tracking-mode-advanced').classList.add('hidden');
+});
 
 document.getElementById('next-button-setup').addEventListener('click', () => 
 {
@@ -331,7 +339,6 @@ document.getElementById('next-button-hardwares').addEventListener('click', () =>
     mySystemHardwares.id += '-copy';
     mySystemHardwares.children[0].checked = false;
     mySystemHardwares.children[0].disabled = true;
-    mySystemHardwares.classList.add("unselectable");
     document.getElementById('my-system-hardwares').appendChild(mySystemHardwares);
     
     /* Recap */
