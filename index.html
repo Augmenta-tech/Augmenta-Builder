@@ -103,7 +103,7 @@
                   <p id="dimensions-width-text">Width (<span data-unittext="1">m</span>)</p>
                 </div>
                 <div class="column">
-                  <input id="dimensions-width-input" type="text" placeholder="Width" min="0" max="100" step="0.1">
+                  <input id="dimensions-width-input" type="text" placeholder="Width" min="0" max="100" step="0.1" data-unit="1">
                 </div>
               </div>
               <div id="dimensions-length" class="column">
@@ -111,7 +111,7 @@
                   <p id="dimensions-length-text">Length (<span data-unittext="1">m</span>)</p>
                 </div>
                 <div class="column">
-                  <input id="dimensions-length-input" type="text" placeholder="Length" min="0" max="100" step="0.1">
+                  <input id="dimensions-length-input" type="text" placeholder="Length" min="0" max="100" step="0.1" data-unit="1">
                 </div>
               </div>
               <div id="dimensions-distance" class="column">
@@ -119,7 +119,7 @@
                   <p id="dimensions-distance-text">Sensor height (<span data-unittext="1">m</span>)</p>
                 </div>
                 <div class="column">
-                  <input id="dimensions-distance-input" type="text" placeholder="Sensor height" min="0" max="20" step="0.1">
+                  <input id="dimensions-distance-input" type="text" placeholder="Sensor height" min="0" max="20" step="0.1" data-unit="1">
                 </div>
               </div>
             </div>
@@ -163,13 +163,11 @@
                 </div>
               </label>
             </div>
-            <div id="hardwares-sensors-section" class="row center-x center-y">
-              <div id="hardwares-sensors-selection" class="row wrap center-x center-y">
-                <!-- FILLED IN JS WITH CORRECT SENSORS -->
-              </div>
-              <div id="hardwares-warning-message" class="row hidden">
-                <p id="hardwares-warning-text">No hardware setup found,</p><p id="hardwares-warning-button" class="text-button">click here to get in touch with our experts.</p>
-              </div>
+            <div id="hardwares-sensors-selection" class="row wrap center-x center-y">
+              <!-- FILLED IN JS WITH CORRECT SENSORS -->
+            </div>
+            <div id="hardwares-warning-message" class="row hidden setup-warning-message">
+              <p id="hardwares-warning-text" class="warning-text">No hardware setup found,</p><p id="hardwares-warning-button" class="text-button">click here to get in touch with our experts.</p>
             </div>
           </div>
           <!-- HARDWARES BUTTONS-->
@@ -203,7 +201,7 @@
             <div id="my-system-hardwares" class="column center-x center-y my-system-section my-system-line">
 
             </div>
-            <div id="my-system-recap" class="column center-x center-y my-system-section">
+            <div id="my-system-recap" class="column center-y my-system-section">
 
             </div>
           </div>
@@ -223,17 +221,6 @@
         <div class="bottom-line"></div>
       </div> 
     </div>
-
-    <!-- Beta style management -->
-    <script>
-      //document.getElementById('bottom-section').classList.add('dark-mode');
-      /* DARK MODE */
-      /*const bottomChilds = document.getElementById('bottom-section').getElementsByTagName("*");
-      for(let i = 0; i < bottomChilds.length; i++)
-      {
-        bottomChilds[i].classList.add('dark-mode');
-      }*/
-    </script>
 
   </body>
 

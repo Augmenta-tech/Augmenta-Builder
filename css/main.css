@@ -32,7 +32,8 @@ p {
 	font-weight: normal;
 	font-size: 12px;
 	line-height: 15px;
-	color: var(--color-grey-text);
+	/*color: var(--color-grey-text);*/
+  color: var(--color-white);
 }
 
 .row.wrap{
@@ -149,6 +150,7 @@ p {
   color: var(--color-blue-buttons);
   text-decoration: underline;
   cursor: pointer;
+  padding-left: 4px;
 }
 
 .warning-text{
@@ -247,17 +249,14 @@ p {
   color: var(--color-blue-z);
 }
 
-#dimensions-warning-button{
-  padding-left: 4px;
-}
-
 /** HARDWARES SECTION **/
 #hardwares-section-builder{
-  gap: 20px;
+  gap: 2vh;
 }
 
 .hardwares-radio-label [type=radio] + div {
   cursor: pointer;
+  height: 2vh;
   padding: 2vh;
   outline: 1px solid var(--color-grey-selectable);
 }
@@ -269,7 +268,6 @@ p {
 
 #hardwares-switch-indoor-outdoor [type=radio] + div {
   width: 15vh;
-  height: 3vh;
 }
 
 #hardwares-switch-indoor-outdoor [type=radio]:checked + div{
@@ -282,7 +280,6 @@ p {
 
 .hardwares-sensors-type [type=radio] + div {
   width: 30vh;
-  height: 2vh;
 }
 
 .hardwares-sensors-type [type=radio]:checked + div{
@@ -322,4 +319,8 @@ p {
 
 #my-system-hardwares .hardwares-sensors-type.unselectable [type=radio] + div{
   width: 20vh;
+}
+
+#my-system-recap{
+  padding-left: 4vh;
 }
