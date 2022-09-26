@@ -249,53 +249,53 @@ p {
   border-color: var(--color-grey-unselected) var(--color-grey-unselected) var(--color-grey-unselected) var(--color-blue-z);
 }
 
-#dimensions-distance-text{
+#dimensions-distance p{
   color: var(--color-blue-z);
 }
 
 /** HARDWARES SECTION **/
-#hardwares-section-builder{
+#hardware-section-builder{
   gap: 2vh;
 }
 
-.hardwares-radio-label [type=radio] + div {
+.hardware-radio-label [type=radio] + div {
   cursor: pointer;
   height: 2vh;
   padding: 2vh;
   outline: 1px solid var(--color-grey-selectable);
 }
 
-.hardwares-radio-label [type=radio] + div > p {
+.hardware-radio-label [type=radio] + div > p {
   color: var(--color-grey-selectable);
   font-weight: 600;
 }
 
-#hardwares-switch-indoor-outdoor [type=radio] + div {
+#hardware-switch-indoor-outdoor [type=radio] + div {
   width: 15vh;
 }
 
-#hardwares-switch-indoor-outdoor [type=radio]:checked + div{
+#hardware-switch-indoor-outdoor [type=radio]:checked + div{
   background-color: var(--color-white);
 }
 
-#hardwares-sensors-selection{
+#hardware-sensors-selection{
   gap: 10px;
 }
 
-.hardwares-sensors-type [type=radio] + div {
+.hardware-sensors-type [type=radio] + div {
   width: 30vh;
 }
 
-.hardwares-sensors-type [type=radio]:checked + div{
+.hardware-sensors-type [type=radio]:checked + div{
   background-color: var(--color-white);
 }
 
-.hardwares-sensors-type.unselectable [type=radio] + div{
+.hardware-sensors-type.unselectable [type=radio] + div{
   cursor: default;
   outline-color: var(--color-grey-unselected);
 }
 
-.hardwares-sensors-type.unselectable [type=radio] + div > p{
+.hardware-sensors-type.unselectable [type=radio] + div > p{
   color: var(--color-grey-unselected);
 }
 
@@ -322,7 +322,7 @@ p {
   color: var(--color-grey-text);
 }
 
-#my-system-hardwares .hardwares-sensors-type [type=radio] + div{
+#my-system-hardware .hardware-sensors-type [type=radio] + div{
   cursor: default;
   width: 20vh;
 }

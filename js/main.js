@@ -13,9 +13,9 @@ const sceneManager = main.viewportManager.sceneManager;
 
 /** VALUES FILLED THROUGH FROM */
 let trackingMode;
-let givenWidth;
-let givenLength;
-let givenHeight;
+let inputWidth;
+let inputLength;
+let inputHeight;
 let sensorsCompatible = [];
 let usedSensor;
 
@@ -33,8 +33,8 @@ function resetValues()
     document.getElementById('dimensions-distance-input').value = '';
     resetDimensionsSection();
 
-    /** Hardwares section */
-    resetHardwaresSection(); //select indoor and empty sensors div
+    /** Hardware section */
+    resetHardwareSection(); //select indoor and empty sensors div
 }
 
 
@@ -66,6 +66,7 @@ for(let i = 0; i < trackingModes.length; i++)
         document.getElementById('setup-warning-message').classList.add('hidden');
     });
 }
+
 document.getElementById('tracking-mode-advanced').addEventListener('click', () => {
     const trackingModeChoices = document.getElementById('tracking-mode-selection-builder').children;
     for(let i = 0; i < trackingModeChoices.length; i++)
@@ -96,7 +97,8 @@ document.getElementById('next-button-setup').addEventListener('click', () =>
     if(trackingMode === "wall-tracking")
     {
         document.getElementById('dimensions-length').classList.add('hidden');
-        document.getElementById('dimensions-distance-text').innerHTML = `Height (<span data-unittext="` + sceneManager.currentUnit.value + `">` + sceneManager.currentUnit.label + `</span>)`;
+        document.getElementById('dimensions-distance-text-default').classList.add('hidden');
+        document.getElementById('dimensions-distance-text-wall-tracking').classList.remove('hidden');
         document.getElementById('dimensions-distance-input').placeholder = `Height`;
     }
     
@@ -113,6 +115,9 @@ document.getElementById('next-button-setup').addEventListener('click', () =>
 function resetDimensionsSection()
 {
     document.getElementById('dimensions-length').classList.remove('hidden');
+    document.getElementById('dimensions-distance-text-default').classList.remove('hidden');
+    document.getElementById('dimensions-distance-text-wall-tracking').classList.add('hidden');
+    document.getElementById('dimensions-distance-input').placeholder = `Sensor height`;
 
     document.getElementById('dimensions-warning-message').classList.add('hidden');
 }
@@ -123,25 +128,25 @@ document.getElementById('dimensions-distance-input').addEventListener('change', 
 
 function onChangeDimensionsInput()
 {
-    const givenWidth = parseFloat(document.getElementById('dimensions-width-input').value);
-    const givenLength = parseFloat(document.getElementById('dimensions-length-input').value);
-    const givenHeight = parseFloat(document.getElementById('dimensions-distance-input').value);
+    const inputSceneWidth = parseFloat(document.getElementById('dimensions-width-input').value);
+    const inputSceneLength = parseFloat(document.getElementById('dimensions-length-input').value);
+    const inputSceneHeight = parseFloat(document.getElementById('dimensions-distance-input').value);
     
-    if(trackingMode === "wall-tracking" && givenWidth > 0 && givenHeight > 0)
+    if(trackingMode === "wall-tracking" && inputSceneWidth > 0 && inputSceneHeight > 0)
     {
-        if(checkLidarCoherence(givenWidth, givenHeight, sceneManager.currentUnit.value, getMaxFarFromSensors(lidarsTypes.filter(l => l.recommended), trackingMode)))
+        if(checkLidarCoherence(inputSceneWidth, inputSceneHeight, sceneManager.currentUnit.value, getMaxFarFromSensors(lidarsTypes.filter(l => l.recommended), trackingMode)))
         {
-            sceneManager.updateWallYAugmentaSceneBorder(givenWidth, givenHeight);
+            sceneManager.updateWallYAugmentaSceneBorder(inputSceneWidth, inputSceneHeight);
             document.getElementById('dimensions-warning-message').classList.add('hidden');
         }
         else document.getElementById('dimensions-warning-message').classList.remove('hidden');
     }
-    else if(givenWidth > 0 && givenLength > 0)
+    else if(inputSceneWidth > 0 && inputSceneLength > 0)
     {
-        sceneManager.updateFloorAugmentaSceneBorder(givenWidth, givenLength);
-        if(givenHeight > 0)
+        sceneManager.updateFloorAugmentaSceneBorder(inputSceneWidth, inputSceneLength);
+        if(inputSceneHeight > 0)
         {
-            if(checkCameraCoherence(givenHeight, sceneManager.currentUnit.value, getMaxFarFromSensors(camerasTypes.filter(c => c.recommended), trackingMode)))
+            if(checkCameraCoherence(inputSceneHeight, sceneManager.currentUnit.value, getMaxFarFromSensors(camerasTypes.filter(c => c.recommended), trackingMode)))
             {
                 document.getElementById('dimensions-warning-message').classList.add('hidden');
             }
@@ -152,52 +157,52 @@ function onChangeDimensionsInput()
 
 document.getElementById('next-button-dimensions').addEventListener('click', () => 
 {
-    givenWidth = parseFloat(document.getElementById('dimensions-width-input').value);
-    givenLength = parseFloat(document.getElementById('dimensions-length-input').value);
-    givenHeight = parseFloat(document.getElementById('dimensions-distance-input').value);
+    inputWidth = parseFloat(document.getElementById('dimensions-width-input').value);
+    inputLength = parseFloat(document.getElementById('dimensions-length-input').value);
+    inputHeight = parseFloat(document.getElementById('dimensions-distance-input').value);
     
-    if(givenWidth < 0 || givenLength < 0 || givenHeight < 0) return;
+    if(inputWidth < 0 || inputLength < 0 || inputHeight < 0) return;
 
     if(trackingMode === "wall-tracking")
     {
         lidarsTypes.filter(l => l.recommended).forEach(l => {
-            if(checkLidarCoherence(givenWidth, givenHeight, sceneManager.currentUnit.value, getMaxFarFromSensors([l], trackingMode)))
+            if(checkLidarCoherence(inputWidth, inputHeight, sceneManager.currentUnit.value, getMaxFarFromSensors([l], trackingMode)))
                 { sensorsCompatible.push(l) }
         })
     }
     else
     {
         camerasTypes.filter(c => c.recommended).forEach(c => {
-            if(checkCameraCoherence(givenHeight, sceneManager.currentUnit.value, getMaxFarFromSensors([c], trackingMode)))
+            if(checkCameraCoherence(inputHeight, sceneManager.currentUnit.value, getMaxFarFromSensors([c], trackingMode)))
                 { sensorsCompatible.push(c) }
         })
     }
 
     if(sensorsCompatible.length === 0) return;
 
-    const sensorsDiv = document.getElementById('hardwares-sensors-selection');
+    const sensorsDiv = document.getElementById('hardware-sensors-selection');
     sensorsCompatible.forEach(s => {
         const sensorChoice = document.createElement('label');
         sensorChoice.id = "hardware-input-" + s.textId;
-        sensorChoice.classList.add("hardwares-sensors-type", "hardwares-radio-label");
+        sensorChoice.classList.add("hardware-sensors-type", "hardware-radio-label");
 
         sensorChoice.innerHTML = `
             <input id="` + s.textId + `" type="radio" name="sensor-choice" value="` + s.textId + `">
-            <div class="row center-x center-y hardwares-switch">
+            <div class="row center-x center-y hardware-switch">
             <p>` + s.name + `</p>
             </div>`;
         sensorsDiv.appendChild(sensorChoice);
     });
 
-    bindHardwaresEventListeners(sensorsDiv.children)
+    bindHardwareEventListeners(sensorsDiv.children)
     
     sensorsDiv.children[0].dispatchEvent(new Event('click'));
     sensorsDiv.children[0].children[0].checked = true;
 
     document.getElementById('dimensions-content').classList.add('hidden');
-    document.getElementById('hardwares-content').classList.remove('hidden');
+    document.getElementById('hardware-content').classList.remove('hidden');
 
-    document.getElementById('hardwares-tab').classList.add('passed-tab');
+    document.getElementById('hardware-tab').classList.add('passed-tab');
 });
 
 document.getElementById('previous-button-dimensions').addEventListener('click', () => 
@@ -212,23 +217,23 @@ document.getElementById('previous-button-dimensions').addEventListener('click', 
 
 
 /** HARDWARES SECTION */
-function resetHardwaresSection()
+function resetHardwareSection()
 {
     sceneManager.objects.removeSensors();
 
     sensorsCompatible.length = 0;
-    deleteAllChildren(document.getElementById('hardwares-sensors-selection'));
+    deleteAllChildren(document.getElementById('hardware-sensors-selection'));
 
-    document.getElementById('hardwares-input-radio-indoor').checked = true;
-    document.getElementById('hardwares-input-radio-outdoor').checked = false;
+    document.getElementById('hardware-input-radio-indoor').checked = true;
+    document.getElementById('hardware-input-radio-outdoor').checked = false;
 
-    document.getElementById('hardwares-warning-message').classList.add('hidden');
+    document.getElementById('hardware-warning-message').classList.add('hidden');
 }
 
-function bindHardwaresEventListeners(sensorsElements)
+function bindHardwareEventListeners(sensorsElements)
 {
     // Switch indoor-outdoor events
-    const switchElement = document.getElementById('hardwares-switch-indoor-outdoor');
+    const switchElement = document.getElementById('hardware-switch-indoor-outdoor');
     const switchInputs = switchElement.querySelectorAll('input');
     for(let i = 0; i < switchInputs.length; i++)
     {
@@ -248,9 +253,9 @@ function bindHardwaresEventListeners(sensorsElements)
                 }
             });
             if(sensorsCompatible.length === disabledSensorsNumber){
-                document.getElementById('hardwares-warning-message').classList.remove('hidden');
+                document.getElementById('hardware-warning-message').classList.remove('hidden');
             }
-            else document.getElementById('hardwares-warning-message').classList.add('hidden');
+            else document.getElementById('hardware-warning-message').classList.add('hidden');
         });
     }
 
@@ -264,6 +269,10 @@ function bindHardwaresEventListeners(sensorsElements)
                 if(!sensorInput.disabled && !sensorInput.checked)
                 {
                     const sensorTextId = sensorsElements[i].id.substring("hardware-input-".length);
+
+                    const givenWidth = Math.ceil(inputWidth / sceneManager.currentUnit.value * 100) / 100;
+                    const givenLength = Math.ceil(inputLength / sceneManager.currentUnit.value * 100) / 100;
+                    const givenHeight = Math.ceil(inputHeight / sceneManager.currentUnit.value * 100) / 100;
 
                     //on click on a sensor, display the scene calculated with this sensor
                     switch(trackingMode)
@@ -303,7 +312,7 @@ function bindHardwaresEventListeners(sensorsElements)
     }
 }
 
-document.getElementById('next-button-hardwares').addEventListener('click', () => 
+document.getElementById('next-button-hardware').addEventListener('click', () => 
 {
     const sensorsRadios = document.getElementsByName("sensor-choice");
     let unselectedRadios = 0;
@@ -335,11 +344,11 @@ document.getElementById('next-button-hardwares').addEventListener('click', () =>
     document.getElementById('my-system-dimensions').appendChild(mySystemDimensions);
 
     /* Hardware */
-    const mySystemHardwares = document.getElementById('hardware-input-' + usedSensor.textId).cloneNode(true);
-    mySystemHardwares.id += '-copy';
-    mySystemHardwares.children[0].checked = false;
-    mySystemHardwares.children[0].disabled = true;
-    document.getElementById('my-system-hardwares').appendChild(mySystemHardwares);
+    const mySystemHardware = document.getElementById('hardware-input-' + usedSensor.textId).cloneNode(true);
+    mySystemHardware.id += '-copy';
+    mySystemHardware.children[0].checked = false;
+    mySystemHardware.children[0].disabled = true;
+    document.getElementById('my-system-hardware').appendChild(mySystemHardware);
     
     /* Recap */
     const recapDiv = document.getElementById('my-system-recap');
@@ -360,20 +369,20 @@ document.getElementById('next-button-hardwares').addEventListener('click', () =>
         recapDiv.appendChild(hookInfo)
     }
 
-    document.getElementById('hardwares-content').classList.add('hidden');
+    document.getElementById('hardware-content').classList.add('hidden');
     document.getElementById('my-system-content').classList.remove('hidden');
 
     document.getElementById('my-system-tab').classList.add('passed-tab');
 });
 
-document.getElementById('previous-button-hardwares').addEventListener('click', () => 
+document.getElementById('previous-button-hardware').addEventListener('click', () => 
 {
-    resetHardwaresSection();
+    resetHardwareSection();
 
-    document.getElementById('hardwares-content').classList.add('hidden');
+    document.getElementById('hardware-content').classList.add('hidden');
     document.getElementById('dimensions-content').classList.remove('hidden');
 
-    document.getElementById('hardwares-tab').classList.remove('passed-tab');
+    document.getElementById('hardware-tab').classList.remove('passed-tab');
 });
 
 
@@ -382,7 +391,7 @@ function resetMySystemSection()
 {
     deleteAllChildren(document.getElementById('my-system-tracking-mode'));
     deleteAllChildren(document.getElementById('my-system-dimensions'));
-    deleteAllChildren(document.getElementById('my-system-hardwares'));
+    deleteAllChildren(document.getElementById('my-system-hardware'));
     deleteAllChildren(document.getElementById('my-system-recap'));
 }
 
@@ -390,10 +399,10 @@ document.getElementById('previous-button-my-system').addEventListener('click', (
 {
     resetMySystemSection();
     
-    const sensorsDiv = document.getElementById('hardwares-sensors-selection');
+    const sensorsDiv = document.getElementById('hardware-sensors-selection');
 
     document.getElementById('my-system-content').classList.add('hidden');
-    document.getElementById('hardwares-content').classList.remove('hidden');
+    document.getElementById('hardware-content').classList.remove('hidden');
 
     document.getElementById('my-system-tab').classList.remove('passed-tab');
 });
@@ -403,9 +412,8 @@ document.getElementById('previous-button-my-system').addEventListener('click', (
 
 
 
-/************************* TESTS TO ADD DIFFERENTLY */
 
 /** TO CHECK IF HAS A CLASS (click on tabs passed ?) */
-if(document.getElementById('setup-tab').classList.contains("passed-tab")) console.log('passed');
+// document.getElementById('setup-tab').classList.contains("passed-tab"))
 
 

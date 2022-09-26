@@ -49,8 +49,8 @@
             <h3>Dimensions</h3>
             <div class="tab-line"></div>
           </div>
-          <div id="hardwares-tab" class="column center-x tab">
-            <h3>Hardwares</h3>
+          <div id="hardware-tab" class="column center-x tab">
+            <h3>Hardware</h3>
             <div class="tab-line"></div>
           </div>
           <div id="my-system-tab" class="column center-x tab">
@@ -123,7 +123,8 @@
               </div>
               <div id="dimensions-distance" class="column">
                 <div class="column">
-                  <p id="dimensions-distance-text">Sensor height (<span data-unittext="1">m</span>)</p>
+                  <p id="dimensions-distance-text-default">Sensor height (<span data-unittext="1">m</span>)</p>
+                  <p id="dimensions-distance-text-wall-tracking" class="hidden">Height (<span data-unittext="1">m</span>)</p>
                 </div>
                 <div class="column">
                   <input id="dimensions-distance-input" type="text" placeholder="Sensor height" min="0" max="20" step="0.1" data-unit="1">
@@ -153,45 +154,45 @@
         </div>
 
         <!-- HARDWARES CONTENT -->
-        <div id="hardwares-content" class="column builder-section hidden">
+        <div id="hardware-content" class="column builder-section hidden">
           <!-- HARDWARES SELECTION -->
-          <div id="hardwares-section-builder" class="column center-x center-y builder-section-content">
-            <div id="hardwares-switch-indoor-outdoor" class="row center-x center-y">
-              <label class="hardwares-radio-label">
-                <input id="hardwares-input-radio-indoor" type="radio" name="switch-indoor-outdoor-builder" value="indoor" checked>
-                <div class="row center-x center-y hardwares-switch">
+          <div id="hardware-section-builder" class="column center-x center-y builder-section-content">
+            <div id="hardware-switch-indoor-outdoor" class="row center-x center-y">
+              <label class="hardware-radio-label">
+                <input id="hardware-input-radio-indoor" type="radio" name="switch-indoor-outdoor-builder" value="indoor" checked>
+                <div class="row center-x center-y hardware-switch">
                   <p>Indoor</p>
                 </div>
               </label>
-              <label class="hardwares-radio-label">
-                <input id="hardwares-input-radio-outdoor" type="radio" name="switch-indoor-outdoor-builder" value="outdoor">
-                <div class="row center-x center-y hardwares-switch">
+              <label class="hardware-radio-label">
+                <input id="hardware-input-radio-outdoor" type="radio" name="switch-indoor-outdoor-builder" value="outdoor">
+                <div class="row center-x center-y hardware-switch">
                   <p>Outdoor</p>
                 </div>
               </label>
             </div>
-            <div id="hardwares-sensors-selection" class="row wrap center-x center-y">
+            <div id="hardware-sensors-selection" class="row wrap center-x center-y">
               <!-- FILLED IN JS WITH CORRECT SENSORS -->
             </div>
-            <div id="hardwares-warning-message" class="row hidden setup-warning-message">
-              <p id="hardwares-warning-text" class="warning-text">No hardware setup found,</p><p id="hardwares-warning-button" class="text-button">click here to get in touch with our experts.</p>
+            <div id="hardware-warning-message" class="row hidden setup-warning-message">
+              <p id="hardware-warning-text" class="warning-text">No hardware setup found,</p><p id="hardware-warning-button" class="text-button">click here to get in touch with our experts.</p>
             </div>
           </div>
           <!-- HARDWARES BUTTONS-->
           <div class="row center-x center-y builder-section-buttons">
             <!-- PREVIOUS BUTTON -->
-            <div id="previous-button-hardwares" class="builder-button builder-secondary-button">
-              <p id="previous-button-hardwares-text" class="bold-font"> PREVIOUS </p>
+            <div id="previous-button-hardware" class="builder-button builder-secondary-button">
+              <p id="previous-button-hardware-text" class="bold-font"> PREVIOUS </p>
             </div>
             <!-- NEXT BUTTON -->
-            <div id="next-button-hardwares" class="builder-button builder-main-button">
-              <p id="next-button-hardwares-text" class="bold-font"> NEXT </p>
+            <div id="next-button-hardware" class="builder-button builder-main-button">
+              <p id="next-button-hardware-text" class="bold-font"> NEXT </p>
               <span class="iconify" data-icon="dashicons:arrow-right-alt2"></span>
             </div>
           </div>
           <!-- NEED SOMETHING DIFFERENT BUTTON -->
-          <div id="hardwares-need-something-different-button" class="row center-x">
-            <p id="hardwares-need-something-different-button" class="text-button">Need something different ?</p>
+          <div id="hardware-need-something-different-button" class="row center-x">
+            <p id="hardware-need-something-different-button" class="text-button">Need something different ?</p>
           </div>
         </div>
 
@@ -205,7 +206,7 @@
             <div id="my-system-dimensions" class="column center-x center-y my-system-section my-system-line">
 
             </div>
-            <div id="my-system-hardwares" class="column center-x center-y my-system-section my-system-line">
+            <div id="my-system-hardware" class="column center-x center-y my-system-section my-system-line">
 
             </div>
             <div id="my-system-recap" class="column center-y my-system-section">
