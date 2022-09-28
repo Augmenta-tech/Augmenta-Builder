@@ -19,24 +19,64 @@ let inputHeight;
 let sensorsCompatible = [];
 let usedSensor;
 
-resetValues()
+/** RESTORE SESSION */
+restoreSession();
 
-function resetValues()
+function restoreSession()
 {
-    /** SETUP SECTION */
-    resetSetupSection(); //Select floor
+    const builderStep = sessionStorage.getItem('builderStep');
+    if(builderStep)
+    {
+        initSetupSection();
+        if(builderStep <= 0) return;
+        else
+        {
+            initDimensionsSection();
+        }
+        if(builderStep <= 1) 
+        {
+            document.getElementById('setup-content').classList.add('hidden');
+            document.getElementById('dimensions-content').classList.remove('hidden');
 
-    /**Dimensions section */
-    // Empty all inputs
-    document.getElementById('dimensions-width-input').value = ''; 
-    document.getElementById('dimensions-length-input').value = ''; 
-    document.getElementById('dimensions-distance-input').value = '';
-    resetDimensionsSection();
+            document.getElementById('dimensions-tab').classList.add('passed-tab');
+            return;
+        }
+        else 
+        {
+            getDimensions();
+            initHardwareSection();
+            selectUsedSensor();
+        }
+        if(builderStep <= 2)
+        {
+            document.getElementById('setup-content').classList.add('hidden');
+            document.getElementById('hardware-content').classList.remove('hidden');
 
-    /** Hardware section */
-    resetHardwareSection(); //select indoor and empty sensors div
+            document.getElementById('dimensions-tab').classList.add('passed-tab');
+            document.getElementById('hardware-tab').classList.add('passed-tab');
+            return;
+        }
+        else
+        {
+            getHardware();
+            initMySystemSection();
+        }
+        if(builderStep <= 3)
+        {
+            document.getElementById('setup-content').classList.add('hidden');
+            document.getElementById('my-system-content').classList.remove('hidden');
+
+            document.getElementById('dimensions-tab').classList.add('passed-tab');
+            document.getElementById('hardware-tab').classList.add('passed-tab');
+            document.getElementById('my-system-tab').classList.add('passed-tab');
+            return;
+        }
+
+    }
+    else{
+        sessionStorage.setItem('builderStep', 0);
+    }
 }
-
 
 /** HANDY FUNCTIONS */
 function deleteAllChildren(element)
@@ -47,22 +87,25 @@ function deleteAllChildren(element)
 }
 
 /** SETUP SECTION */
-function resetSetupSection()
+function initSetupSection()
 {
+    const sceneInfos = sessionStorage.getItem('sceneInfos');
+    if(sceneInfos) trackingMode = JSON.parse(sceneInfos).trackingMode;
+    /*
     const trackingModeRadios = document.getElementsByName("tracking-mode-selection-builder");
     for(let i = 0; i < trackingModeRadios.length; i++)
     {
-        trackingModeRadios[i].checked = trackingModeRadios[i].value === "human-tracking";
+        trackingModeRadios[i].checked = (trackingModeRadios[i].value === (trackingMode ? trackingMode : "human-tracking"));
     }
+    if(trackingMode && sceneManager.augmentaSceneLoaded) sceneManager.changeTrackingMode(trackingMode)*/
 }
 
-const trackingModes = ['human-tracking', 'hand-tracking', 'wall-tracking'];
-
-for(let i = 0; i < trackingModes.length; i++)
+const trackingModeRadios = document.getElementsByName("tracking-mode-selection-builder");
+for(let i = 0; i < trackingModeRadios.length; i++)
 {
-    document.getElementById('tracking-mode-' + trackingModes[i] + '-input').addEventListener('click', () => 
+    trackingModeRadios[i].addEventListener('click', () => 
     {
-        sceneManager.changeTrackingMode(trackingModes[i])
+        sceneManager.changeTrackingMode(trackingModeRadios[i].value)
         document.getElementById('setup-warning-message').classList.add('hidden');
     });
 }
@@ -88,32 +131,30 @@ document.getElementById('next-button-setup').addEventListener('click', () =>
         }
     }
 
-    if(!trackingModes.includes(trackingMode))
+    if(!trackingMode)
     {
         document.getElementById('setup-warning-message').classList.remove('hidden');
         return;
     }
     
-    if(trackingMode === "wall-tracking")
-    {
-        document.getElementById('dimensions-length').classList.add('hidden');
-        document.getElementById('dimensions-distance-text-default').classList.add('hidden');
-        document.getElementById('dimensions-distance-text-wall-tracking').classList.remove('hidden');
-        document.getElementById('dimensions-distance-input').placeholder = `Height`;
-    }
-    
-    onChangeDimensionsInput();
+    initDimensionsSection();
 
     document.getElementById('setup-content').classList.add('hidden');
     document.getElementById('dimensions-content').classList.remove('hidden');
 
     document.getElementById('dimensions-tab').classList.add('passed-tab');
+
+    sessionStorage.setItem('builderStep', 1);
 });
 
 
 /** DIMENSIONS SECTION */
 function resetDimensionsSection()
 {
+    inputWidth = undefined;
+    inputLength = undefined;
+    inputHeight = undefined;
+
     document.getElementById('dimensions-length').classList.remove('hidden');
     document.getElementById('dimensions-distance-text-default').classList.remove('hidden');
     document.getElementById('dimensions-distance-text-wall-tracking').classList.add('hidden');
@@ -126,13 +167,24 @@ document.getElementById('dimensions-width-input').addEventListener('change', onC
 document.getElementById('dimensions-length-input').addEventListener('change', onChangeDimensionsInput);
 document.getElementById('dimensions-distance-input').addEventListener('change', onChangeDimensionsInput);
 
+function initDimensionsSection()
+{
+    if(trackingMode === "wall-tracking")
+    {
+        document.getElementById('dimensions-length').classList.add('hidden');
+        document.getElementById('dimensions-distance-text-default').classList.add('hidden');
+        document.getElementById('dimensions-distance-text-wall-tracking').classList.remove('hidden');
+        document.getElementById('dimensions-distance-input').placeholder = `Height`;
+    }
+}
+
 function onChangeDimensionsInput()
 {
     const inputSceneWidth = parseFloat(document.getElementById('dimensions-width-input').value);
     const inputSceneLength = parseFloat(document.getElementById('dimensions-length-input').value);
     const inputSceneHeight = parseFloat(document.getElementById('dimensions-distance-input').value);
     
-    if(trackingMode === "wall-tracking" && inputSceneWidth > 0 && inputSceneHeight > 0)
+    if(trackingMode === "wall-tracking" && inputSceneWidth && inputSceneHeight)
     {
         if(checkLidarCoherence(inputSceneWidth, inputSceneHeight, sceneManager.currentUnit.value, getMaxFarFromSensors(lidarsTypes.filter(l => l.recommended), trackingMode)))
         {
@@ -141,7 +193,7 @@ function onChangeDimensionsInput()
         }
         else document.getElementById('dimensions-warning-message').classList.remove('hidden');
     }
-    else if(inputSceneWidth > 0 && inputSceneLength > 0)
+    else if(inputSceneWidth && inputSceneLength)
     {
         sceneManager.updateFloorAugmentaSceneBorder(inputSceneWidth, inputSceneLength);
         if(inputSceneHeight > 0)
@@ -155,14 +207,60 @@ function onChangeDimensionsInput()
     }
 }
 
-document.getElementById('next-button-dimensions').addEventListener('click', () => 
+function getDimensions()
 {
     inputWidth = parseFloat(document.getElementById('dimensions-width-input').value);
     inputLength = parseFloat(document.getElementById('dimensions-length-input').value);
     inputHeight = parseFloat(document.getElementById('dimensions-distance-input').value);
-    
-    if(inputWidth < 0 || inputLength < 0 || inputHeight < 0) return;
+}
 
+document.getElementById('next-button-dimensions').addEventListener('click', () => 
+{
+    getDimensions()
+    
+    if((trackingMode !== 'wall-tracking' && ( !inputWidth || !inputLength || !inputHeight)) || 
+        (trackingMode === 'wall-tracking' && (!inputWidth || !inputHeight))) return;
+
+    initHardwareSection();
+    selectFirstSensorAvailable();
+
+    document.getElementById('dimensions-content').classList.add('hidden');
+    document.getElementById('hardware-content').classList.remove('hidden');
+
+    document.getElementById('hardware-tab').classList.add('passed-tab');
+
+    sessionStorage.setItem('builderStep', 2);
+});
+
+document.getElementById('previous-button-dimensions').addEventListener('click', () => 
+{
+    resetDimensionsSection();
+
+    document.getElementById('dimensions-content').classList.add('hidden');
+    document.getElementById('setup-content').classList.remove('hidden');
+
+    document.getElementById('dimensions-tab').classList.remove('passed-tab');
+
+    sessionStorage.setItem('builderStep', 0);
+});
+
+
+/** HARDWARES SECTION */
+function resetHardwareSection()
+{
+    usedSensor = undefined;
+
+    sensorsCompatible.length = 0;
+    deleteAllChildren(document.getElementById('hardware-sensors-selection'));
+
+    document.getElementById('hardware-input-radio-indoor').checked = true;
+    document.getElementById('hardware-input-radio-outdoor').checked = false;
+
+    document.getElementById('hardware-warning-message').classList.add('hidden');
+}
+
+function initHardwareSection()
+{
     if(trackingMode === "wall-tracking")
     {
         lidarsTypes.filter(l => l.recommended).forEach(l => {
@@ -193,41 +291,15 @@ document.getElementById('next-button-dimensions').addEventListener('click', () =
             </div>`;
         sensorsDiv.appendChild(sensorChoice);
     });
-
-    bindHardwareEventListeners(sensorsDiv.children)
-    
-    sensorsDiv.children[0].dispatchEvent(new Event('click'));
-    sensorsDiv.children[0].children[0].checked = true;
-
-    document.getElementById('dimensions-content').classList.add('hidden');
-    document.getElementById('hardware-content').classList.remove('hidden');
-
-    document.getElementById('hardware-tab').classList.add('passed-tab');
-});
-
-document.getElementById('previous-button-dimensions').addEventListener('click', () => 
-{
-    resetDimensionsSection();
-
-    document.getElementById('dimensions-content').classList.add('hidden');
-    document.getElementById('setup-content').classList.remove('hidden');
-
-    document.getElementById('dimensions-tab').classList.remove('passed-tab');
-});
-
-
-/** HARDWARES SECTION */
-function resetHardwareSection()
-{
-    sceneManager.objects.removeSensors();
-
-    sensorsCompatible.length = 0;
-    deleteAllChildren(document.getElementById('hardware-sensors-selection'));
-
-    document.getElementById('hardware-input-radio-indoor').checked = true;
-    document.getElementById('hardware-input-radio-outdoor').checked = false;
-
-    document.getElementById('hardware-warning-message').classList.add('hidden');
+ 
+    bindHardwareEventListeners(sensorsDiv.children);
+   
+    const switchElement = document.getElementById('hardware-switch-indoor-outdoor');
+    const switchInputs = switchElement.querySelectorAll('input');
+    for(let i = 0; i < switchInputs.length; i++)
+    {
+        if(switchInputs[i].checked) switchInputs[i].dispatchEvent(new Event('click'));
+    }
 }
 
 function bindHardwareEventListeners(sensorsElements)
@@ -255,7 +327,10 @@ function bindHardwareEventListeners(sensorsElements)
             if(sensorsCompatible.length === disabledSensorsNumber){
                 document.getElementById('hardware-warning-message').classList.remove('hidden');
             }
-            else document.getElementById('hardware-warning-message').classList.add('hidden');
+            else {
+                document.getElementById('hardware-warning-message').classList.add('hidden');
+                selectFirstSensorAvailable();
+            }
         });
     }
 
@@ -312,18 +387,108 @@ function bindHardwareEventListeners(sensorsElements)
     }
 }
 
-document.getElementById('next-button-hardware').addEventListener('click', () => 
+function selectFirstSensorAvailable()
+{
+    const sensorsDiv = document.getElementById('hardware-sensors-selection');
+    for(let i = 0; i < sensorsDiv.children.length; i++)
+    {
+        if(!sensorsDiv.children[i].classList.contains('unselectable'))
+        {
+            if(sceneManager.augmentaSceneLoaded) sensorsDiv.children[i].dispatchEvent(new Event('click'));
+            sensorsDiv.children[i].children[0].checked = true;
+            break;
+        }
+    }
+}
+
+function selectUsedSensor()
+{
+    const sceneInfos = sessionStorage.getItem('sceneInfos');
+    if(sceneInfos)
+    {
+        const objects = JSON.parse(sceneInfos).objects;
+        let sensorTextId;
+        switch(trackingMode)
+        {
+            case "wall-tracking":
+                const usedLidarId = (objects.lidars.length > 0) ? objects.lidars[0].lidarTypeId : 0;
+                sensorTextId = lidarsTypes.find(l => l.id === usedLidarId).textId;
+                break;
+            case "hand-tracking":
+            case "human-tracking":
+                const usedCameraId = (objects.nodes.length > 0) ? objects.nodes[0].cameraTypeId : 0
+                sensorTextId = camerasTypes.find(c => c.id === usedCameraId).textId;
+                break;
+            default:
+                break;
+        }
+
+        const sensorsLabels = document.getElementById('hardware-sensors-selection').children;
+
+        for(let i = 0; i < sensorsLabels.length; i++)
+        {
+            if(!sensorsLabels[i].classList.contains('unselectable') && sensorsLabels[i].querySelector('input').value === sensorTextId)
+            {
+                if(sceneManager.augmentaSceneLoaded) sensorsLabels[i].dispatchEvent(new Event('click'));
+                sensorsLabels[i].querySelector('input').checked = true;
+                break;
+            }
+        }
+    }
+    else selectFirstSensorAvailable();
+}
+
+function getHardware()
 {
     const sensorsRadios = document.getElementsByName("sensor-choice");
-    let unselectedRadios = 0;
     for(let i = 0; i < sensorsRadios.length; i++)
     {
-        if(!sensorsRadios[i].checked) unselectedRadios++;
-        else usedSensor = camerasTypes.concat(lidarsTypes).find(sensorType => sensorType.textId === sensorsRadios[i].value);
+        if(sensorsRadios[i].checked) usedSensor = camerasTypes.concat(lidarsTypes).find(sensorType => sensorType.textId === sensorsRadios[i].value);
     }
-    if(unselectedRadios === sensorsRadios.length) return;
+}
+
+document.getElementById('next-button-hardware').addEventListener('click', () => 
+{
+    getHardware();
+    
+    if(!usedSensor) return;
 
     // fill "My system" section
+    initMySystemSection();
+
+    document.getElementById('hardware-content').classList.add('hidden');
+    document.getElementById('my-system-content').classList.remove('hidden');
+
+    document.getElementById('my-system-tab').classList.add('passed-tab');
+
+    sessionStorage.setItem('builderStep', 3);
+});
+
+document.getElementById('previous-button-hardware').addEventListener('click', () => 
+{
+    sceneManager.objects.removeSensors();
+    resetHardwareSection();
+
+    document.getElementById('hardware-content').classList.add('hidden');
+    document.getElementById('dimensions-content').classList.remove('hidden');
+
+    document.getElementById('hardware-tab').classList.remove('passed-tab');
+
+    sessionStorage.setItem('builderStep', 1);
+});
+
+
+/** MY SYTEM SECTION */
+function resetMySystemSection()
+{
+    deleteAllChildren(document.getElementById('my-system-tracking-mode'));
+    deleteAllChildren(document.getElementById('my-system-dimensions'));
+    deleteAllChildren(document.getElementById('my-system-hardware'));
+    deleteAllChildren(document.getElementById('my-system-recap'));
+}
+
+function initMySystemSection()
+{
     /* Tracking Mode */
     const mySystemTrackingMode = document.getElementById("tracking-mode-" + trackingMode + "-input").cloneNode(true);
     mySystemTrackingMode.id += '-copy';
@@ -352,7 +517,29 @@ document.getElementById('next-button-hardware').addEventListener('click', () =>
     
     /* Recap */
     const recapDiv = document.getElementById('my-system-recap');
-    const nbSensors = sceneManager.objects.getNbSensors();
+
+    let nbSensors;
+    const sceneInfos = sessionStorage.getItem('sceneInfos');
+    if(sceneInfos)
+    {
+        const objects = JSON.parse(sceneInfos).objects;
+        switch(trackingMode)
+        {
+            case "wall-tracking":
+                nbSensors = objects.lidars.length;
+                break;
+            case "hand-tracking":
+            case "human-tracking":
+                nbSensors = objects.nodes.length;
+                break;
+            default:
+                break;
+        }
+    }
+    else
+    {
+        nbSensors = sceneManager.objects.getNbSensors();
+    }
 
     const sensorInfo = document.createElement('p');
     sensorInfo.innerHTML = `x` + nbSensors + ` ` + usedSensor.name;
@@ -367,32 +554,7 @@ document.getElementById('next-button-hardware').addEventListener('click', () =>
         const hookInfo = document.createElement('p');
         hookInfo.innerHTML = `x` + nbSensors + ` Hook`;
         recapDiv.appendChild(hookInfo)
-    }
-
-    document.getElementById('hardware-content').classList.add('hidden');
-    document.getElementById('my-system-content').classList.remove('hidden');
-
-    document.getElementById('my-system-tab').classList.add('passed-tab');
-});
-
-document.getElementById('previous-button-hardware').addEventListener('click', () => 
-{
-    resetHardwareSection();
-
-    document.getElementById('hardware-content').classList.add('hidden');
-    document.getElementById('dimensions-content').classList.remove('hidden');
-
-    document.getElementById('hardware-tab').classList.remove('passed-tab');
-});
-
-
-/** MY SYTEM SECTION */
-function resetMySystemSection()
-{
-    deleteAllChildren(document.getElementById('my-system-tracking-mode'));
-    deleteAllChildren(document.getElementById('my-system-dimensions'));
-    deleteAllChildren(document.getElementById('my-system-hardware'));
-    deleteAllChildren(document.getElementById('my-system-recap'));
+    }   
 }
 
 document.getElementById('previous-button-my-system').addEventListener('click', () => 
@@ -405,6 +567,8 @@ document.getElementById('previous-button-my-system').addEventListener('click', (
     document.getElementById('hardware-content').classList.remove('hidden');
 
     document.getElementById('my-system-tab').classList.remove('passed-tab');
+
+    sessionStorage.setItem('builderStep', 2);
 });
 
 
