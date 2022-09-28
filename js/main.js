@@ -6,10 +6,96 @@ import { SceneManager } from '../designer/js/scene/SceneManager.js';
 import { calculateCameraConfig, calculateLidarConfig, checkCameraCoherence, checkLidarCoherence, createSceneFromCameraConfig, createSceneFromLidarConfig, getMaxFarFromSensors } from '../designer/js/UI/Wizard.js';
 import { ViewportManager } from '../designer/js/ViewportManager.js';
 
-ViewportManager.DEFAULT_CAM_POSITION = new Vector3(-2, 8, 10);
+//ViewportManager.DEFAULT_CAM_POSITION = new Vector3(5, 4, 12);
 SceneManager.DEFAULT_WIDTH = 10;
 const main = new Engine(true);
 const sceneManager = main.viewportManager.sceneManager;
+
+/** UI */
+window.addEventListener('resize', onWindowResize);
+function onWindowResize() {
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    if(windowWidth > 1.7 * windowHeight)
+    {
+        document.getElementById('augmenta-builder').classList.remove('column');
+        document.getElementById('augmenta-builder').classList.add('row');
+        document.getElementById('top-section').classList.add('vertical-view');
+        document.getElementById('viewport').classList.add('vertical-view');
+        document.getElementById('bottom-section').classList.add('vertical-view');
+        document.getElementById('bottom-section').classList.remove('column', 'center-x');
+        document.getElementById('bottom-section').classList.add('row', 'center-y');
+        document.getElementById('builder-tabs').classList.remove('row', 'center-x');
+        document.getElementById('builder-tabs').classList.add('column', 'center-y');
+        const builderSections = document.getElementsByClassName('builder-section');
+        for(let i = 0; i < builderSections.length; i++)
+        {
+            builderSections[i].classList.add('vertical-view');
+            for(let j = 0; j < builderSections[i].children.length; j++)
+            {
+                builderSections[i].children[j].classList.add('vertical-view');
+            }
+        }
+        document.getElementById('tracking-mode-selection-builder').classList.remove('row', );
+        document.getElementById('tracking-mode-selection-builder').classList.add('column', );
+
+        document.getElementById('hardware-section-builder').classList.add('vertical-view');
+        document.getElementById('hardware-sensors-selection').classList.add('vertical-view');
+        document.getElementById('hardware-sensors-selection').classList.remove('row');
+        document.getElementById('hardware-sensors-selection').classList.add('column');
+
+        
+        
+        document.getElementById('my-system-section-builder').classList.remove('row');
+        document.getElementById('my-system-section-builder').classList.add('column');
+        const mySystemSections = document.getElementsByClassName('my-system-section');
+        for(let i = 0; i < mySystemSections.length; i++) mySystemSections[i].classList.add('vertical-view');
+
+        const builderButtons = document.getElementsByClassName('builder-button');
+        for(let i = 0; i < builderButtons.length; i++) builderButtons[i].classList.add('vertical-view');
+        document.getElementById('bottom-line').classList.add('hidden');
+    }
+    else
+    {
+        document.getElementById('augmenta-builder').classList.remove('row');
+        document.getElementById('augmenta-builder').classList.add('column');
+        document.getElementById('top-section').classList.remove('vertical-view');
+        document.getElementById('viewport').classList.remove('vertical-view');
+        document.getElementById('bottom-section').classList.remove('vertical-view');
+        document.getElementById('bottom-section').classList.remove('row', 'center-y');
+        document.getElementById('bottom-section').classList.add('column', 'center-x');
+        document.getElementById('builder-tabs').classList.remove('column', 'center-y');
+        document.getElementById('builder-tabs').classList.add('row', 'center-x');
+        const builderSections = document.getElementsByClassName('builder-section');
+        for(let i = 0; i < builderSections.length; i++)
+        {
+            builderSections[i].classList.remove('vertical-view');
+            for(let j = 0; j < builderSections[i].children.length; j++)
+            {
+                builderSections[i].children[j].classList.remove('vertical-view');
+            }
+        }
+        document.getElementById('tracking-mode-selection-builder').classList.remove('column');
+        document.getElementById('tracking-mode-selection-builder').classList.add('row');
+
+        document.getElementById('hardware-section-builder').classList.remove('vertical-view');
+        document.getElementById('hardware-sensors-selection').classList.remove('vertical-view');
+        document.getElementById('hardware-sensors-selection').classList.remove('column');
+        document.getElementById('hardware-sensors-selection').classList.add('row');
+
+        
+        
+        document.getElementById('my-system-section-builder').classList.remove('column');
+        document.getElementById('my-system-section-builder').classList.add('row');
+        const mySystemSections = document.getElementsByClassName('my-system-section');
+        for(let i = 0; i < mySystemSections.length; i++) mySystemSections[i].classList.remove('vertical-view');
+
+        const builderButtons = document.getElementsByClassName('builder-button');
+        for(let i = 0; i < builderButtons.length; i++) builderButtons[i].classList.remove('vertical-view');
+        document.getElementById('bottom-line').classList.remove('hidden');
+    }
+    main.viewportManager.onWindowResize();
+}
 
 /** VALUES FILLED THROUGH FROM */
 let trackingMode;
@@ -20,6 +106,7 @@ let sensorsCompatible = [];
 let usedSensor;
 
 /** RESTORE SESSION */
+onWindowResize();
 restoreSession();
 
 function restoreSession()
@@ -282,7 +369,7 @@ function initHardwareSection()
     sensorsCompatible.forEach(s => {
         const sensorChoice = document.createElement('label');
         sensorChoice.id = "hardware-input-" + s.textId;
-        sensorChoice.classList.add("hardware-sensors-type", "hardware-radio-label");
+        sensorChoice.classList.add("row", "center-x", "hardware-sensors-type", "hardware-radio-label");
 
         sensorChoice.innerHTML = `
             <input id="` + s.textId + `" type="radio" name="sensor-choice" value="` + s.textId + `">

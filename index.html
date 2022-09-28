@@ -17,7 +17,7 @@
 
   <body>
 
-    <div id="augmenta-builder" class="column full-height">
+    <div id="augmenta-builder" class="column">
 
       <!-- HEADER/VIEWPORT - TOP -->
       <div id="top-section" class="column">
@@ -88,11 +88,13 @@
           </div>
 
           <!-- SETUP BUTTONS-->
-          <div class="row center-x center-y builder-section-buttons">
+          <div class="column center-x center-y builder-section-buttons">
+            <div class="row center-x center-y nav-buttons">
             <!-- NEXT BUTTON -->
-            <div id="next-button-setup" class="builder-button builder-main-button">
-              <p id="next-button-setup-text" class="bold-font"> NEXT </p>
-              <span class="iconify" data-icon="dashicons:arrow-right-alt2"></span>
+              <div id="next-button-setup" class="builder-button builder-main-button">
+                <p id="next-button-setup-text" class="bold-font"> NEXT </p>
+                <span class="iconify" data-icon="dashicons:arrow-right-alt2"></span>
+              </div>
             </div>
           </div>
         </div>
@@ -100,7 +102,7 @@
         <!-- DIMENSIONS CONTENT -->
         <div id="dimensions-content" class="column builder-section hidden">
           <!-- DIMENSIONS INPUTS -->
-          <div id="dimensions-section-builder" class="column builder-section-content">
+          <div id="dimensions-section-builder" class="column center-y builder-section-content">
             <div id="gizmo-helper-image" class="row center-x center-y">
               <img src="img/gizmo-helper.png" alt="Gizmo helper">
             </div>
@@ -136,20 +138,22 @@
             </div>
           </div>
           <!-- DIMENSIONS BUTTONS-->
-          <div class="row center-x center-y builder-section-buttons">
-            <!-- PREVIOUS BUTTON -->
-            <div id="previous-button-dimensions" class="builder-button builder-secondary-button">
-              <p id="previous-button-dimensions-text" class="bold-font"> PREVIOUS </p>
+          <div class="column center-x center-y builder-section-buttons">
+            <div class="row center-x center-y nav-buttons">
+              <!-- PREVIOUS BUTTON -->
+              <div id="previous-button-dimensions" class="builder-button builder-secondary-button">
+                <p id="previous-button-dimensions-text" class="bold-font"> PREVIOUS </p>
+              </div>
+              <!-- NEXT BUTTON -->
+              <div id="next-button-dimensions" class="builder-button builder-main-button">
+                <p id="next-button-dimensions-text" class="bold-font"> NEXT </p>
+                <span class="iconify" data-icon="dashicons:arrow-right-alt2"></span>
+              </div>
             </div>
-            <!-- NEXT BUTTON -->
-            <div id="next-button-dimensions" class="builder-button builder-main-button">
-              <p id="next-button-dimensions-text" class="bold-font"> NEXT </p>
-              <span class="iconify" data-icon="dashicons:arrow-right-alt2"></span>
+            <!-- NEED SOMETHING DIFFERENT BUTTON -->
+            <div id="dimensions-need-something-different-button" class="row center-x">
+              <p id="dimensions-need-something-different-button" class="text-button">Need something different ?</p>
             </div>
-          </div>
-          <!-- NEED SOMETHING DIFFERENT BUTTON -->
-          <div id="dimensions-need-something-different-button" class="row center-x">
-            <p id="dimensions-need-something-different-button" class="text-button">Need something different ?</p>
           </div>
         </div>
 
@@ -179,20 +183,22 @@
             </div>
           </div>
           <!-- HARDWARES BUTTONS-->
-          <div class="row center-x center-y builder-section-buttons">
-            <!-- PREVIOUS BUTTON -->
-            <div id="previous-button-hardware" class="builder-button builder-secondary-button">
-              <p id="previous-button-hardware-text" class="bold-font"> PREVIOUS </p>
+          <div class="column center-x center-y builder-section-buttons">
+            <div class="row center-x center-y nav-buttons">
+              <!-- PREVIOUS BUTTON -->
+              <div id="previous-button-hardware" class="builder-button builder-secondary-button">
+                <p id="previous-button-hardware-text" class="bold-font"> PREVIOUS </p>
+              </div>
+              <!-- NEXT BUTTON -->
+              <div id="next-button-hardware" class="builder-button builder-main-button">
+                <p id="next-button-hardware-text" class="bold-font"> NEXT </p>
+                <span class="iconify" data-icon="dashicons:arrow-right-alt2"></span>
+              </div>
             </div>
-            <!-- NEXT BUTTON -->
-            <div id="next-button-hardware" class="builder-button builder-main-button">
-              <p id="next-button-hardware-text" class="bold-font"> NEXT </p>
-              <span class="iconify" data-icon="dashicons:arrow-right-alt2"></span>
+            <!-- NEED SOMETHING DIFFERENT BUTTON -->
+            <div id="hardware-need-something-different-button" class="row center-x">
+              <p id="hardware-need-something-different-button" class="text-button">Need something different ?</p>
             </div>
-          </div>
-          <!-- NEED SOMETHING DIFFERENT BUTTON -->
-          <div id="hardware-need-something-different-button" class="row center-x">
-            <p id="hardware-need-something-different-button" class="text-button">Need something different ?</p>
           </div>
         </div>
 
@@ -214,19 +220,21 @@
             </div>
           </div>
           <!-- MY SYSTEM BUTTONS-->
-          <div class="row center-x center-y builder-section-buttons">
-            <!-- PREVIOUS BUTTON -->
-            <div id="previous-button-my-system" class="builder-button builder-secondary-button">
-              <p id="previous-button-my-system-text" class="bold-font"> PREVIOUS </p>
-            </div>
-            <!-- REQUEST QUOTE BUTTON -->
-            <div id="request-quote-button-my-system" class="builder-button builder-main-button">
-              <p id="request-quote-button-my-system-text" class="bold-font"> REQUEST A QUOTE </p>
+          <div class="column center-x center-y builder-section-buttons">
+            <div class="row center-x center-y nav-buttons">
+              <!-- PREVIOUS BUTTON -->
+              <div id="previous-button-my-system" class="builder-button builder-secondary-button">
+                <p id="previous-button-my-system-text" class="bold-font"> PREVIOUS </p>
+              </div>
+              <!-- REQUEST QUOTE BUTTON -->
+              <div id="request-quote-button-my-system" class="builder-button builder-main-button">
+                <p id="request-quote-button-my-system-text" class="bold-font"> REQUEST A QUOTE </p>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="bottom-line"></div>
+        <div id="bottom-line" class="bottom-line"></div>
       </div> 
     </div>
 
