@@ -55,7 +55,7 @@ function onWindowResize() {
         for(let i = 0; i < builderButtons.length; i++) builderButtons[i].classList.add('vertical-view');
         document.getElementById('bottom-line').classList.add('hidden');
     }
-    else
+    else //exact opposite
     {
         document.getElementById('augmenta-builder').classList.remove('row');
         document.getElementById('augmenta-builder').classList.add('column');
@@ -178,13 +178,13 @@ function initSetupSection()
 {
     const sceneInfos = sessionStorage.getItem('sceneInfos');
     if(sceneInfos) trackingMode = JSON.parse(sceneInfos).trackingMode;
-    /*
+    
     const trackingModeRadios = document.getElementsByName("tracking-mode-selection-builder");
     for(let i = 0; i < trackingModeRadios.length; i++)
     {
         trackingModeRadios[i].checked = (trackingModeRadios[i].value === (trackingMode ? trackingMode : "human-tracking"));
     }
-    if(trackingMode && sceneManager.augmentaSceneLoaded) sceneManager.changeTrackingMode(trackingMode)*/
+    if(trackingMode && sceneManager.augmentaSceneLoaded) sceneManager.changeTrackingMode(trackingMode)
 }
 
 const trackingModeRadios = document.getElementsByName("tracking-mode-selection-builder");
@@ -254,17 +254,6 @@ document.getElementById('dimensions-width-input').addEventListener('change', onC
 document.getElementById('dimensions-length-input').addEventListener('change', onChangeDimensionsInput);
 document.getElementById('dimensions-distance-input').addEventListener('change', onChangeDimensionsInput);
 
-function initDimensionsSection()
-{
-    if(trackingMode === "wall-tracking")
-    {
-        document.getElementById('dimensions-length').classList.add('hidden');
-        document.getElementById('dimensions-distance-text-default').classList.add('hidden');
-        document.getElementById('dimensions-distance-text-wall-tracking').classList.remove('hidden');
-        document.getElementById('dimensions-distance-input').placeholder = `Height`;
-    }
-}
-
 function onChangeDimensionsInput()
 {
     const inputSceneWidth = parseFloat(document.getElementById('dimensions-width-input').value);
@@ -294,6 +283,45 @@ function onChangeDimensionsInput()
     }
 }
 
+function initDimensionsSection()
+{
+    if(trackingMode === "wall-tracking")
+    {
+        document.getElementById('dimensions-length').classList.add('hidden');
+        document.getElementById('dimensions-distance-text-default').classList.add('hidden');
+        document.getElementById('dimensions-distance-text-wall-tracking').classList.remove('hidden');
+        document.getElementById('dimensions-distance-input').placeholder = `Height`;
+    }
+    
+    if(trackingMode)
+    {
+        const sceneInfos = sessionStorage.getItem('sceneInfos');
+        if(sceneInfos)
+        {
+            const sceneSize = JSON.parse(sceneInfos).sceneSize;
+            switch(trackingMode)
+            {
+                case 'wall-tracking':
+                    document.getElementById('dimensions-width-input').value = sceneSize[0];
+                    document.getElementById('dimensions-distance-input').value = sceneSize[1];
+                    break;
+                case 'hand-tracking':
+                case 'human-tracking':
+                    document.getElementById('dimensions-width-input').value = sceneSize[0];
+                    document.getElementById('dimensions-length-input').value = sceneSize[1];
+                    const nodes = JSON.parse(sceneInfos).objects.nodes;
+                    if(nodes.length > 0) document.getElementById('dimensions-distance-input').value = nodes[0].p_z - (trackingMode === 'hand-tracking' ? SceneManager.TABLE_ELEVATION : 0);
+                    else{
+                        document.getElementById('dimensions-distance-input').value = '';
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+}
+    
 function getDimensions()
 {
     inputWidth = parseFloat(document.getElementById('dimensions-width-input').value);
@@ -494,35 +522,38 @@ function selectUsedSensor()
     if(sceneInfos)
     {
         const objects = JSON.parse(sceneInfos).objects;
-        let sensorTextId;
-        switch(trackingMode)
+        if(objects.lidars.length > 0 || objects.nodes.length > 0)
         {
-            case "wall-tracking":
-                const usedLidarId = (objects.lidars.length > 0) ? objects.lidars[0].lidarTypeId : 0;
-                sensorTextId = lidarsTypes.find(l => l.id === usedLidarId).textId;
-                break;
-            case "hand-tracking":
-            case "human-tracking":
-                const usedCameraId = (objects.nodes.length > 0) ? objects.nodes[0].cameraTypeId : 0
-                sensorTextId = camerasTypes.find(c => c.id === usedCameraId).textId;
-                break;
-            default:
-                break;
-        }
-
-        const sensorsLabels = document.getElementById('hardware-sensors-selection').children;
-
-        for(let i = 0; i < sensorsLabels.length; i++)
-        {
-            if(!sensorsLabels[i].classList.contains('unselectable') && sensorsLabels[i].querySelector('input').value === sensorTextId)
+            let sensorTextId;
+            switch(trackingMode)
             {
-                if(sceneManager.augmentaSceneLoaded) sensorsLabels[i].dispatchEvent(new Event('click'));
-                sensorsLabels[i].querySelector('input').checked = true;
-                break;
+                case "wall-tracking":
+                    const usedLidarId = (objects.lidars.length > 0) ? objects.lidars[0].lidarTypeId : 0;
+                    sensorTextId = lidarsTypes.find(l => l.id === usedLidarId).textId;
+                    break;
+                case "hand-tracking":
+                case "human-tracking":
+                    const usedCameraId = (objects.nodes.length > 0) ? objects.nodes[0].cameraTypeId : 0
+                    sensorTextId = camerasTypes.find(c => c.id === usedCameraId).textId;
+                    break;
+                default:
+                    break;
+            }
+    
+            const sensorsLabels = document.getElementById('hardware-sensors-selection').children;
+    
+            for(let i = 0; i < sensorsLabels.length; i++)
+            {
+                if(!sensorsLabels[i].classList.contains('unselectable') && sensorsLabels[i].querySelector('input').value === sensorTextId)
+                {
+                    if(sceneManager.augmentaSceneLoaded) sensorsLabels[i].dispatchEvent(new Event('click'));
+                    sensorsLabels[i].querySelector('input').checked = true;
+                    break;
+                }
             }
         }
+        else selectFirstSensorAvailable();
     }
-    else selectFirstSensorAvailable();
 }
 
 function getHardware()
