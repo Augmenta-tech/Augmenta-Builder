@@ -23,10 +23,7 @@ function onWindowResize() {
         document.getElementById('top-section').classList.add('vertical-view');
         document.getElementById('viewport').classList.add('vertical-view');
         document.getElementById('bottom-section').classList.add('vertical-view');
-        document.getElementById('bottom-section').classList.remove('column', 'center-x');
-        document.getElementById('bottom-section').classList.add('row', 'center-y');
-        document.getElementById('builder-tabs').classList.remove('row', 'center-x');
-        document.getElementById('builder-tabs').classList.add('column', 'center-y');
+        document.getElementById('builder-tabs').classList.add('vertical-view');
         const builderSections = document.getElementsByClassName('builder-section');
         for(let i = 0; i < builderSections.length; i++)
         {
@@ -61,10 +58,7 @@ function onWindowResize() {
         document.getElementById('top-section').classList.remove('vertical-view');
         document.getElementById('viewport').classList.remove('vertical-view');
         document.getElementById('bottom-section').classList.remove('vertical-view');
-        document.getElementById('bottom-section').classList.remove('row', 'center-y');
-        document.getElementById('bottom-section').classList.add('column', 'center-x');
-        document.getElementById('builder-tabs').classList.remove('column', 'center-y');
-        document.getElementById('builder-tabs').classList.add('row', 'center-x');
+        document.getElementById('builder-tabs').classList.remove('vertical-view');
         const builderSections = document.getElementsByClassName('builder-section');
         for(let i = 0; i < builderSections.length; i++)
         {
@@ -423,10 +417,12 @@ function initHardwareSection()
         sensorChoice.id = "hardware-input-" + s.textId;
         sensorChoice.classList.add("row", "center-x", "hardware-sensors-type", "hardware-radio-label");
 
+        const near = Math.floor(s.rangeNear * sceneManager.currentUnit.value * 100) / 100;
+        const far = Math.floor((trackingMode === 'hand-tracking' ? s.handFar : s.rangeFar) * sceneManager.currentUnit.value * 100) / 100;
         sensorChoice.innerHTML = `
             <input id="` + s.textId + `" type="radio" name="sensor-choice" value="` + s.textId + `">
             <div class="row center-x center-y hardware-switch">
-            <p>` + s.name + `</p>
+            <p>` + s.niceName + ` (<span data-unit=` + sceneManager.currentUnit.value + `>` + near + `</span> - <span data-unit=` + sceneManager.currentUnit.value + `>` + far + `</span><span data-unittext=` + sceneManager.currentUnit.value + `>` + sceneManager.currentUnit.label +`</span>)</p>
             </div>`;
         sensorsDiv.appendChild(sensorChoice);
     });
@@ -636,7 +632,6 @@ function resetMySystemSection()
 {
     deleteAllChildren(document.getElementById('my-system-tracking-mode'));
     deleteAllChildren(document.getElementById('my-system-dimensions'));
-    deleteAllChildren(document.getElementById('my-system-hardware'));
     deleteAllChildren(document.getElementById('my-system-recap'));
 }
 
@@ -660,13 +655,6 @@ function initMySystemSection()
         dimensionsInputs[i].readOnly = true;
     }
     document.getElementById('my-system-dimensions').appendChild(mySystemDimensions);
-
-    /* Hardware */
-    const mySystemHardware = document.getElementById('hardware-input-' + usedSensor.textId).cloneNode(true);
-    mySystemHardware.id += '-copy';
-    mySystemHardware.children[0].checked = false;
-    mySystemHardware.children[0].disabled = true;
-    document.getElementById('my-system-hardware').appendChild(mySystemHardware);
     
     /* Recap */
     const recapDiv = document.getElementById('my-system-recap');
@@ -695,19 +683,14 @@ function initMySystemSection()
     }
 
     const sensorInfo = document.createElement('p');
-    sensorInfo.innerHTML = `x` + nbSensors + ` ` + usedSensor.name;
+    sensorInfo.innerHTML = `x` + nbSensors + ` ` + usedSensor.niceName;
     recapDiv.appendChild(sensorInfo);
 
-    if(trackingMode !== 'wall-tracking')
-    {
+    usedSensor.accessories.forEach(a => {
         const nodeInfo = document.createElement('p');
-        nodeInfo.innerHTML = `x` + nbSensors + ` Augmenta Node`;
+        nodeInfo.innerHTML = `x` + nbSensors + ` ` + a;
         recapDiv.appendChild(nodeInfo)
-        
-        const hookInfo = document.createElement('p');
-        hookInfo.innerHTML = `x` + nbSensors + ` Hook`;
-        recapDiv.appendChild(hookInfo)
-    }   
+    });
 }
 
 document.getElementById('previous-button-my-system').addEventListener('click', () => 
