@@ -433,11 +433,20 @@ function initHardwareSection()
  
     bindHardwareEventListeners(sensorsDiv.children);
    
+    const sceneInfos = sessionStorage.getItem('sceneInfos');
+    let sceneEnvironment = undefined;
+    if(sceneInfos) sceneEnvironment = JSON.parse(sceneInfos).sceneEnvironment;
+
     const switchElement = document.getElementById('hardware-switch-indoor-outdoor');
     const switchInputs = switchElement.querySelectorAll('input');
     for(let i = 0; i < switchInputs.length; i++)
     {
-        if(switchInputs[i].checked) switchInputs[i].dispatchEvent(new Event('click'));
+        if(switchInputs[i].value === (sceneEnvironment ? sceneEnvironment : 'indoor'))
+        {
+            disableSensorsConsideringEnvironment(switchInputs[i].value);
+            switchInputs[i].checked = true;
+        }
+        else switchInputs[i].checked = false;
     }
 }
 
@@ -449,27 +458,8 @@ function bindHardwareEventListeners(sensorsElements)
     for(let i = 0; i < switchInputs.length; i++)
     {
         switchInputs[i].addEventListener('click', () => {
-            let disabledSensorsNumber = 0;
-            sensorsCompatible.forEach(s => {
-                if(s.canBeUsed.includes(switchInputs[i].value)){
-                    document.getElementById(s.textId).disabled = false;
-                    document.getElementById("hardware-input-" + s.textId).classList.remove("unselectable");
-                }
-                else{
-                    document.getElementById(s.textId).disabled = true;
-                    document.getElementById("hardware-input-" + s.textId).classList.add("unselectable")
-                    document.getElementById(s.textId).checked = false;
-
-                    disabledSensorsNumber++;
-                }
-            });
-            if(sensorsCompatible.length === disabledSensorsNumber){
-                document.getElementById('hardware-warning-message').classList.remove('hidden');
-            }
-            else {
-                document.getElementById('hardware-warning-message').classList.add('hidden');
-                selectFirstSensorAvailable();
-            }
+            disableSensorsConsideringEnvironment(switchInputs[i].value);
+            sceneManager.changeEnvironment(switchInputs[i].value); 
         });
     }
 
@@ -519,6 +509,31 @@ function bindHardwareEventListeners(sensorsElements)
                 }
             });
         }
+    }
+}
+
+function disableSensorsConsideringEnvironment(environment)
+{
+    let disabledSensorsNumber = 0;
+    sensorsCompatible.forEach(s => {
+        if(s.canBeUsed.includes(environment)){
+            document.getElementById(s.textId).disabled = false;
+            document.getElementById("hardware-input-" + s.textId).classList.remove("unselectable");
+        }
+        else{
+            document.getElementById(s.textId).disabled = true;
+            document.getElementById("hardware-input-" + s.textId).classList.add("unselectable")
+            document.getElementById(s.textId).checked = false;
+
+            disabledSensorsNumber++;
+        }
+    });
+    if(sensorsCompatible.length === disabledSensorsNumber){
+        document.getElementById('hardware-warning-message').classList.remove('hidden');
+    }
+    else {
+        document.getElementById('hardware-warning-message').classList.add('hidden');
+        selectFirstSensorAvailable();
     }
 }
 
