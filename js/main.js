@@ -3,7 +3,7 @@ import { Vector3 } from 'three';
 import { camerasTypes, lidarsTypes } from '../designer/js/data.js';
 import { Engine } from '../designer/js/Engine.js';
 import { SceneManager } from '../designer/js/scene/SceneManager.js';
-import { calculateCameraConfig, calculateLidarConfig, checkCameraCoherence, checkLidarCoherence, createSceneFromCameraConfig, createSceneFromLidarConfig, getMaxFarFromSensors } from '../designer/js/UI/Wizard.js';
+import { calculateCameraConfig, calculateLidarConfig, checkCameraCoherence, checkLidarCoherence, createSceneFromCameraConfig, createSceneFromLidarConfig, getMinNearFromSensors, getMaxFarFromSensors } from '../designer/js/UI/Wizard.js';
 import { ViewportManager } from '../designer/js/ViewportManager.js';
 
 //ViewportManager.DEFAULT_CAM_POSITION = new Vector3(5, 4, 12);
@@ -261,15 +261,19 @@ document.getElementById('dimensions-distance-input').addEventListener('change', 
 
 function onChangeDimensionsInput()
 {
-    const inputSceneWidth = parseFloat(document.getElementById('dimensions-width-input').value);
-    const inputSceneLength = parseFloat(document.getElementById('dimensions-length-input').value);
-    const inputSceneHeight = parseFloat(document.getElementById('dimensions-distance-input').value);
+    const givenSceneWidth = parseFloat(document.getElementById('dimensions-width-input').value);
+    const givenSceneLength = parseFloat(document.getElementById('dimensions-length-input').value);
+    const givenSceneHeight = parseFloat(document.getElementById('dimensions-distance-input').value);
+
+    const inputSceneWidth = Math.floor(parseFloat(givenSceneWidth) / sceneManager.currentUnit.value * 100) / 100;
+    const inputSceneLength = Math.floor(parseFloat(givenSceneLength) / sceneManager.currentUnit.value * 100) / 100;
+    const inputSceneHeight = Math.floor(parseFloat(givenSceneHeight) / sceneManager.currentUnit.value * 100) / 100;
     
-    if(trackingMode === "wall-tracking" && inputSceneWidth && inputSceneHeight)
+    if(trackingMode === "wall-tracking" && givenSceneWidth && givenSceneHeight)
     {
         if(checkLidarCoherence(inputSceneWidth, inputSceneHeight, getMaxFarFromSensors(lidarsTypes.filter(l => l.recommended), trackingMode)))
         {
-            sceneManager.updateWallYAugmentaSceneBorder(inputSceneWidth, inputSceneHeight);
+            sceneManager.updateWallYAugmentaSceneBorder(givenSceneWidth, givenSceneHeight);
             document.getElementById('dimensions-warning-message').classList.add('hidden');
             return true;
         }
@@ -279,12 +283,14 @@ function onChangeDimensionsInput()
             return false;
         }
     }
-    else if(inputSceneWidth && inputSceneLength)
+    else if(givenSceneWidth && givenSceneLength)
     {
-        sceneManager.updateFloorAugmentaSceneBorder(inputSceneWidth, inputSceneLength);
+        sceneManager.updateFloorAugmentaSceneBorder(givenSceneWidth, givenSceneLength);
         if(inputSceneHeight > 0)
         {
-            if(checkCameraCoherence(inputSceneHeight, getMaxFarFromSensors(camerasTypes.filter(c => c.recommended), trackingMode)))
+            const camerasTypesRecommended = camerasTypes.filter(c => c.recommended);
+            const overlapHeightDetection = trackingMode === 'human-tracking' ? SceneManager.DEFAULT_DETECTION_HEIGHT : SceneManager.HAND_TRACKING_OVERLAP_HEIGHT;
+            if(checkCameraCoherence(inputSceneHeight, overlapHeightDetection, getMaxFarFromSensors(camerasTypesRecommended, trackingMode), getMinNearFromSensors(camerasTypesRecommended)))
             {
                 document.getElementById('dimensions-warning-message').classList.add('hidden');
                 return true;
@@ -319,15 +325,15 @@ function initDimensionsSection()
             switch(trackingMode)
             {
                 case 'wall-tracking':
-                    document.getElementById('dimensions-width-input').value = sceneSize[0];
-                    document.getElementById('dimensions-distance-input').value = sceneSize[1];
+                    document.getElementById('dimensions-width-input').value = Math.floor(sceneSize[0] * sceneManager.currentUnit.value * 100) / 100;
+                    document.getElementById('dimensions-distance-input').value = Math.floor(sceneSize[1] * sceneManager.currentUnit.value * 100) / 100;
                     break;
                 case 'hand-tracking':
                 case 'human-tracking':
-                    document.getElementById('dimensions-width-input').value = sceneSize[0];
-                    document.getElementById('dimensions-length-input').value = sceneSize[1];
+                    document.getElementById('dimensions-width-input').value = Math.floor(sceneSize[0] * sceneManager.currentUnit.value * 100) / 100;
+                    document.getElementById('dimensions-length-input').value = Math.floor(sceneSize[1] * sceneManager.currentUnit.value * 100) / 100;
                     const nodes = JSON.parse(sceneInfos).objects.nodes;
-                    if(nodes.length > 0) document.getElementById('dimensions-distance-input').value = nodes[0].p_z - (trackingMode === 'hand-tracking' ? SceneManager.TABLE_ELEVATION : 0);
+                    if(nodes.length > 0) document.getElementById('dimensions-distance-input').value = Math.floor((nodes[0].p_z - (trackingMode === 'hand-tracking' ? SceneManager.TABLE_ELEVATION : 0)) * sceneManager.currentUnit.value * 100) / 100;
                     else document.getElementById('dimensions-distance-input').value = '';
                     break;
                 default:
@@ -339,19 +345,19 @@ function initDimensionsSection()
     
 function getDimensions()
 {
-    inputWidth = Math.ceil(parseFloat(document.getElementById('dimensions-width-input').value) / sceneManager.currentUnit.value * 100) / 100;
-    inputLength = Math.ceil(parseFloat(document.getElementById('dimensions-length-input').value) / sceneManager.currentUnit.value * 100) / 100;
-    inputHeight = Math.ceil(parseFloat(document.getElementById('dimensions-distance-input').value) / sceneManager.currentUnit.value * 100) / 100;
+    inputWidth = Math.floor(parseFloat(document.getElementById('dimensions-width-input').value) / sceneManager.currentUnit.value * 100) / 100;
+    inputLength = Math.floor(parseFloat(document.getElementById('dimensions-length-input').value) / sceneManager.currentUnit.value * 100) / 100;
+    inputHeight = Math.floor(parseFloat(document.getElementById('dimensions-distance-input').value) / sceneManager.currentUnit.value * 100) / 100;
 }
 
 document.getElementById('next-button-dimensions').addEventListener('click', () => 
 {
+    if(!onChangeDimensionsInput()) return;
+
     getDimensions()
-    
+
     if((trackingMode !== 'wall-tracking' && ( !inputWidth || !inputLength || !inputHeight)) || 
         (trackingMode === 'wall-tracking' && (!inputWidth || !inputHeight))) return;
-
-    if(!onChangeDimensionsInput()) return;
 
     initHardwareSection();
     selectFirstSensorAvailable();
@@ -396,14 +402,15 @@ function initHardwareSection()
     if(trackingMode === "wall-tracking")
     {
         lidarsTypes.filter(l => l.recommended).forEach(l => {
-            if(checkLidarCoherence(inputWidth, inputHeight, getMaxFarFromSensors([l], trackingMode)))
+            if(checkLidarCoherence(inputWidth, inputHeight, l.rangeFar, trackingMode))
                 { sensorsCompatible.push(l) }
         })
     }
     else
     {
         camerasTypes.filter(c => c.recommended).forEach(c => {
-            if(checkCameraCoherence(inputHeight, getMaxFarFromSensors([c], trackingMode)))
+            const overlapHeightDetection = trackingMode === 'human-tracking' ? SceneManager.DEFAULT_DETECTION_HEIGHT : SceneManager.HAND_TRACKING_OVERLAP_HEIGHT;
+            if(checkCameraCoherence(inputHeight, overlapHeightDetection, trackingMode === 'hand-tracking' ? c.handFar : c.rangeFar, c.rangeNear))
                 { sensorsCompatible.push(c) }
         })
     }
@@ -496,7 +503,7 @@ function bindHardwareEventListeners(sensorsElements)
                         case 'hand-tracking':
                         {
                             const sensor = camerasTypes.find(sensorType => sensorType.textId === sensorTextId);
-                            let overlapHeightDetection = trackingMode === 'human-tracking' ? SceneManager.DEFAULT_DETECTION_HEIGHT : SceneManager.HAND_TRACKING_OVERLAP_HEIGHT;
+                            const overlapHeightDetection = trackingMode === 'human-tracking' ? SceneManager.DEFAULT_DETECTION_HEIGHT : SceneManager.HAND_TRACKING_OVERLAP_HEIGHT;
                             const config = calculateCameraConfig(trackingMode, sensor, inputWidth, inputLength, inputHeight, overlapHeightDetection);
                             if(!config){
                                 console.error('no config found with this setup');
