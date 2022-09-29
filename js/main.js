@@ -221,6 +221,13 @@ document.getElementById('next-button-setup').addEventListener('click', () =>
         document.getElementById('setup-warning-message').classList.remove('hidden');
         return;
     }
+
+    const trackingModes = ['human-tracking', 'hand-tracking','wall-tracking'];
+    if(!trackingModes.includes(trackingMode))
+    {
+        /* TO FORM */
+        return;
+    }
     
     initDimensionsSection();
 
@@ -264,8 +271,13 @@ function onChangeDimensionsInput()
         {
             sceneManager.updateWallYAugmentaSceneBorder(inputSceneWidth, inputSceneHeight);
             document.getElementById('dimensions-warning-message').classList.add('hidden');
+            return true;
         }
-        else document.getElementById('dimensions-warning-message').classList.remove('hidden');
+        else
+        {
+            document.getElementById('dimensions-warning-message').classList.remove('hidden');
+            return false;
+        }
     }
     else if(inputSceneWidth && inputSceneLength)
     {
@@ -275,10 +287,17 @@ function onChangeDimensionsInput()
             if(checkCameraCoherence(inputSceneHeight, sceneManager.currentUnit.value, getMaxFarFromSensors(camerasTypes.filter(c => c.recommended), trackingMode)))
             {
                 document.getElementById('dimensions-warning-message').classList.add('hidden');
+                return true;
             }
-            else document.getElementById('dimensions-warning-message').classList.remove('hidden');
+            else
+            {
+                document.getElementById('dimensions-warning-message').classList.remove('hidden');
+                return false;
+            }
         }
     }
+    
+    return false;
 }
 
 function initDimensionsSection()
@@ -331,6 +350,8 @@ document.getElementById('next-button-dimensions').addEventListener('click', () =
     
     if((trackingMode !== 'wall-tracking' && ( !inputWidth || !inputLength || !inputHeight)) || 
         (trackingMode === 'wall-tracking' && (!inputWidth || !inputHeight))) return;
+
+    if(!onChangeDimensionsInput()) return;
 
     initHardwareSection();
     selectFirstSensorAvailable();
