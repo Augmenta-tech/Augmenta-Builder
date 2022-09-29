@@ -43,8 +43,7 @@ function onWindowResize() {
         document.getElementById('hardware-sensors-selection').classList.add('vertical-view');
         document.getElementById('hardware-sensors-selection').classList.remove('row');
         document.getElementById('hardware-sensors-selection').classList.add('column');
-
-        
+        document.getElementById('hardware-switch-indoor-outdoor').classList.add('vertical-view');
         
         document.getElementById('my-system-section-builder').classList.remove('row');
         document.getElementById('my-system-section-builder').classList.add('column');
@@ -82,8 +81,7 @@ function onWindowResize() {
         document.getElementById('hardware-sensors-selection').classList.remove('vertical-view');
         document.getElementById('hardware-sensors-selection').classList.remove('column');
         document.getElementById('hardware-sensors-selection').classList.add('row');
-
-        
+        document.getElementById('hardware-switch-indoor-outdoor').classList.remove('vertical-view');
         
         document.getElementById('my-system-section-builder').classList.remove('column');
         document.getElementById('my-system-section-builder').classList.add('row');
@@ -311,9 +309,7 @@ function initDimensionsSection()
                     document.getElementById('dimensions-length-input').value = sceneSize[1];
                     const nodes = JSON.parse(sceneInfos).objects.nodes;
                     if(nodes.length > 0) document.getElementById('dimensions-distance-input').value = nodes[0].p_z - (trackingMode === 'hand-tracking' ? SceneManager.TABLE_ELEVATION : 0);
-                    else{
-                        document.getElementById('dimensions-distance-input').value = '';
-                    }
+                    else document.getElementById('dimensions-distance-input').value = '';
                     break;
                 default:
                     break;

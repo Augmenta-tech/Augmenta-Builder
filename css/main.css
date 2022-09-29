@@ -298,7 +298,7 @@ img{
 
 /** HARDWARES SECTION **/
 #hardware-section-builder{
-  gap: 6vh;
+  gap: 2vh;
 }
 
 #hardware-section-builder.vertical-view{
@@ -317,6 +317,11 @@ img{
 }
 
 #hardware-switch-indoor-outdoor {
+  width: 50%;
+  height: 25%;
+}
+
+#hardware-switch-indoor-outdoor.vertical-view {
   width: 50%;
   height:6%;
 }
