@@ -267,7 +267,7 @@ function onChangeDimensionsInput()
     
     if(trackingMode === "wall-tracking" && inputSceneWidth && inputSceneHeight)
     {
-        if(checkLidarCoherence(inputSceneWidth, inputSceneHeight, sceneManager.currentUnit.value, getMaxFarFromSensors(lidarsTypes.filter(l => l.recommended), trackingMode)))
+        if(checkLidarCoherence(inputSceneWidth, inputSceneHeight, getMaxFarFromSensors(lidarsTypes.filter(l => l.recommended), trackingMode)))
         {
             sceneManager.updateWallYAugmentaSceneBorder(inputSceneWidth, inputSceneHeight);
             document.getElementById('dimensions-warning-message').classList.add('hidden');
@@ -284,7 +284,7 @@ function onChangeDimensionsInput()
         sceneManager.updateFloorAugmentaSceneBorder(inputSceneWidth, inputSceneLength);
         if(inputSceneHeight > 0)
         {
-            if(checkCameraCoherence(inputSceneHeight, sceneManager.currentUnit.value, getMaxFarFromSensors(camerasTypes.filter(c => c.recommended), trackingMode)))
+            if(checkCameraCoherence(inputSceneHeight, getMaxFarFromSensors(camerasTypes.filter(c => c.recommended), trackingMode)))
             {
                 document.getElementById('dimensions-warning-message').classList.add('hidden');
                 return true;
@@ -339,9 +339,9 @@ function initDimensionsSection()
     
 function getDimensions()
 {
-    inputWidth = parseFloat(document.getElementById('dimensions-width-input').value);
-    inputLength = parseFloat(document.getElementById('dimensions-length-input').value);
-    inputHeight = parseFloat(document.getElementById('dimensions-distance-input').value);
+    inputWidth = Math.ceil(parseFloat(document.getElementById('dimensions-width-input').value) / sceneManager.currentUnit.value * 100) / 100;
+    inputLength = Math.ceil(parseFloat(document.getElementById('dimensions-length-input').value) / sceneManager.currentUnit.value * 100) / 100;
+    inputHeight = Math.ceil(parseFloat(document.getElementById('dimensions-distance-input').value) / sceneManager.currentUnit.value * 100) / 100;
 }
 
 document.getElementById('next-button-dimensions').addEventListener('click', () => 
@@ -396,14 +396,14 @@ function initHardwareSection()
     if(trackingMode === "wall-tracking")
     {
         lidarsTypes.filter(l => l.recommended).forEach(l => {
-            if(checkLidarCoherence(inputWidth, inputHeight, sceneManager.currentUnit.value, getMaxFarFromSensors([l], trackingMode)))
+            if(checkLidarCoherence(inputWidth, inputHeight, getMaxFarFromSensors([l], trackingMode)))
                 { sensorsCompatible.push(l) }
         })
     }
     else
     {
         camerasTypes.filter(c => c.recommended).forEach(c => {
-            if(checkCameraCoherence(inputHeight, sceneManager.currentUnit.value, getMaxFarFromSensors([c], trackingMode)))
+            if(checkCameraCoherence(inputHeight, getMaxFarFromSensors([c], trackingMode)))
                 { sensorsCompatible.push(c) }
         })
     }
@@ -477,17 +477,13 @@ function bindHardwareEventListeners(sensorsElements)
                 {
                     const sensorTextId = sensorsElements[i].id.substring("hardware-input-".length);
 
-                    const givenWidth = Math.ceil(inputWidth / sceneManager.currentUnit.value * 100) / 100;
-                    const givenLength = Math.ceil(inputLength / sceneManager.currentUnit.value * 100) / 100;
-                    const givenHeight = Math.ceil(inputHeight / sceneManager.currentUnit.value * 100) / 100;
-
                     //on click on a sensor, display the scene calculated with this sensor
                     switch(trackingMode)
                     {
                         case 'wall-tracking':
                         {
                             const sensor = lidarsTypes.find(sensorType => sensorType.textId === sensorTextId);
-                            const config = calculateLidarConfig(sensor, givenWidth, givenHeight);
+                            const config = calculateLidarConfig(sensor, inputWidth, inputHeight);
                             if(!config){
                                 console.error('no config found with this setup');
                                 return;
@@ -501,13 +497,13 @@ function bindHardwareEventListeners(sensorsElements)
                         {
                             const sensor = camerasTypes.find(sensorType => sensorType.textId === sensorTextId);
                             let overlapHeightDetection = trackingMode === 'human-tracking' ? SceneManager.DEFAULT_DETECTION_HEIGHT : SceneManager.HAND_TRACKING_OVERLAP_HEIGHT;
-                            const config = calculateCameraConfig(trackingMode, sensor, givenWidth, givenLength, givenHeight, overlapHeightDetection);
+                            const config = calculateCameraConfig(trackingMode, sensor, inputWidth, inputLength, inputHeight, overlapHeightDetection);
                             if(!config){
                                 console.error('no config found with this setup');
                                 return;
                             }
                             sceneManager.objects.removeSensors();
-                            createSceneFromCameraConfig(config, trackingMode, givenWidth, givenLength, givenHeight + sceneManager.sceneElevation, sceneManager);
+                            createSceneFromCameraConfig(config, trackingMode, inputWidth, inputLength, inputHeight + sceneManager.sceneElevation, sceneManager);
                             break;
                         }
                         default:
