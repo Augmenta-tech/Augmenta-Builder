@@ -247,6 +247,7 @@ function resetDimensionsSection()
 
     document.getElementById('dimensions-length').classList.remove('hidden');
     document.getElementById('dimensions-distance-text-default').classList.remove('hidden');
+    document.getElementById('dimensions-distance-text-hand-tracking').classList.add('hidden');
     document.getElementById('dimensions-distance-text-wall-tracking').classList.add('hidden');
     document.getElementById('dimensions-distance-input').placeholder = `Sensor height`;
 
@@ -256,6 +257,15 @@ function resetDimensionsSection()
 document.getElementById('dimensions-width-input').addEventListener('change', onChangeDimensionsInput);
 document.getElementById('dimensions-length-input').addEventListener('change', onChangeDimensionsInput);
 document.getElementById('dimensions-distance-input').addEventListener('change', onChangeDimensionsInput);
+
+document.getElementById('sensor-height-infos').addEventListener('mouseover', (e) => 
+{
+    const infosText = document.getElementById('sensor-height-infos-text');
+    infosText.style.left = (e.clientX - 180).toString() + "px";
+    infosText.style.top = (e.clientY - 130).toString() + "px";
+    infosText.classList.remove('hidden');
+});
+document.getElementById('sensor-height-infos').addEventListener('mouseleave', () => document.getElementById('sensor-height-infos-text').classList.add('hidden'));
 
 function onChangeDimensionsInput()
 {
@@ -323,6 +333,12 @@ function onChangeDimensionsInput()
 
 function initDimensionsSection()
 {
+    if(trackingMode === "hand-tracking")
+    {
+        document.getElementById('dimensions-distance-text-default').classList.add('hidden');
+        document.getElementById('dimensions-distance-text-hand-tracking').classList.remove('hidden');
+    }
+
     if(trackingMode === "wall-tracking")
     {
         document.getElementById('dimensions-length').classList.add('hidden');

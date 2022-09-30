@@ -321,6 +321,23 @@ textarea:focus {
   color: var(--color-blue-z);
 }
 
+#dimensions-distance-text-hand-tracking svg{
+  padding: 0 0 0 4px;
+}
+
+#sensor-height-infos-text{
+  background-color: var(--color-grey-selectable);
+  width: 150px;
+  height: 100px;
+  padding: 10px;
+  border-radius: 5px;
+  position: absolute;
+}
+
+#sensor-height-infos-text p{
+  color: var(--color-grey-background-selected-item);
+}
+
 /** HARDWARES SECTION **/
 #hardware-section-builder{
   gap: 2vh;
