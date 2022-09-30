@@ -27,7 +27,7 @@ h3 {
   letter-spacing: 2px;
 }
 
-p {
+p, textarea, textarea::placeholder {
 	font-style: normal;
 	font-weight: normal;
 	font-size: 12px;
@@ -36,8 +36,22 @@ p {
   color: var(--color-white);
 }
 
-img{
-  aspect-ratio: 1 / 1;
+textarea, textarea::placeholder, input::placeholder {
+  font-family: 'Inter', sans-serif;
+	font-size: 12px;
+}
+
+textarea {
+  resize: none;
+  color: black;
+}
+
+textarea::placeholder {
+  color: var(--color-grey-text);
+}
+
+textarea:focus {
+  outline: 0;
 }
 
 .wrap{
@@ -126,12 +140,14 @@ img{
 
 .builder-section{
   height: 64%;
+  width: 90%;
   margin: 1vh 0;
   padding: 1vh 0;
 }
 
 .builder-section.vertical-view{
   height: 100%;
+  width: 80%;
   margin: 0 1vh;
   padding: 0 1vh;
 }
@@ -146,11 +162,11 @@ img{
 }
 
 .builder-section-content.vertical-view{
-  height: 85%;
+  height: 70%;
 }
 
 .builder-section-buttons.vertical-view{
-  height: 15%;
+  height: 20%;
 }
 
 .bottom-line{
@@ -218,11 +234,15 @@ img{
 /*SETUP IMAGES STYLE */
 .tracking-mode-choice > img {
   cursor: pointer;
-  height: 12vh;
+  height: 8vw;
   padding: 2vh;
   outline: 1px solid var(--color-grey-unselected);
   border-radius: 4px;
   margin: 2vh;
+}
+
+.vertical-view .tracking-mode-choice > img {
+  height: 10vh;
 }
 
 #tracking-mode-advanced > img{
@@ -359,7 +379,7 @@ img{
 }
 
 .vertical-view .hardware-sensors-type [type=radio] + div {
-  width: 70%;
+  width: 50%;
 }
 
 .hardware-sensors-type [type=radio]:checked + div{
@@ -400,12 +420,12 @@ img{
 
 #my-system-scene-infos{
   width: 50%;
-  height: inherit;
+  height: 80%;
 }
 
 #my-system-scene-infos.vertical-view{
-  width: inherit;
-  height: 50%
+  width: 80%;
+  height: 50%;
 }
 
 #my-system-tracking-mode .tracking-mode-choice [type=radio]:disabled + img{
@@ -440,6 +460,18 @@ img{
 #my-system-recap{
   padding-left: 4vh;
   gap: 5px;
+}
+
+#my-system-scene-name-input::placeholder{
+  color: var(--color-grey-text);
+}
+
+#my-system-scene-name-input:focus{
+  outline: 0;
+}
+
+#my-system-scene-message-input{
+  height: 80%;
 }
 
 #request-quote-button-my-system{

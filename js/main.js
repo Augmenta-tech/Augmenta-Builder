@@ -91,9 +91,9 @@ function onWindowResize() {
 
 /** VALUES FILLED THROUGH FROM */
 let trackingMode;
-let inputWidth;
-let inputLength;
-let inputHeight;
+let givenWidth;
+let givenLength;
+let givenHeight;
 let sensorsCompatible = [];
 let usedSensor;
 
@@ -104,6 +104,7 @@ restoreSession();
 function restoreSession()
 {
     const builderStep = sessionStorage.getItem('builderStep');
+    // TODO: Refaire avec un switch case sans les break
     if(builderStep)
     {
         initSetupSection();
@@ -150,7 +151,6 @@ function restoreSession()
             document.getElementById('my-system-tab').classList.add('passed-tab');
             return;
         }
-
     }
     else{
         sessionStorage.setItem('builderStep', 0);
@@ -219,7 +219,7 @@ document.getElementById('next-button-setup').addEventListener('click', () =>
     const trackingModes = ['human-tracking', 'hand-tracking','wall-tracking'];
     if(!trackingModes.includes(trackingMode))
     {
-        /* TO FORM */
+        /* TODO: TO FORM */
         return;
     }
     
@@ -233,13 +233,17 @@ document.getElementById('next-button-setup').addEventListener('click', () =>
     sessionStorage.setItem('builderStep', 1);
 });
 
+document.getElementById('dimensions-need-something-different-button').addEventListener('click', () => {
+    /* TODO: TO FORM */
+});
+
 
 /** DIMENSIONS SECTION */
 function resetDimensionsSection()
 {
-    inputWidth = undefined;
-    inputLength = undefined;
-    inputHeight = undefined;
+    givenWidth = undefined;
+    givenLength = undefined;
+    givenHeight = undefined;
 
     document.getElementById('dimensions-length').classList.remove('hidden');
     document.getElementById('dimensions-distance-text-default').classList.remove('hidden');
@@ -255,36 +259,53 @@ document.getElementById('dimensions-distance-input').addEventListener('change', 
 
 function onChangeDimensionsInput()
 {
-    const givenSceneWidth = parseFloat(document.getElementById('dimensions-width-input').value);
-    const givenSceneLength = parseFloat(document.getElementById('dimensions-length-input').value);
-    const givenSceneHeight = parseFloat(document.getElementById('dimensions-distance-input').value);
+    const inputSceneWidth = parseFloat(document.getElementById('dimensions-width-input').value);
+    const inputSceneLength = parseFloat(document.getElementById('dimensions-length-input').value);
+    const inputSceneHeight = parseFloat(document.getElementById('dimensions-distance-input').value);
 
-    const inputSceneWidth = Math.floor(parseFloat(givenSceneWidth) / sceneManager.currentUnit.value * 100) / 100;
-    const inputSceneLength = Math.floor(parseFloat(givenSceneLength) / sceneManager.currentUnit.value * 100) / 100;
-    const inputSceneHeight = Math.floor(parseFloat(givenSceneHeight) / sceneManager.currentUnit.value * 100) / 100;
+    const givenSceneWidth = Math.floor(parseFloat(inputSceneWidth) / sceneManager.currentUnit.value * 100) / 100;
+    const givenSceneLength = Math.floor(parseFloat(inputSceneLength) / sceneManager.currentUnit.value * 100) / 100;
+    const givenSceneHeight = Math.floor(parseFloat(inputSceneHeight) / sceneManager.currentUnit.value * 100) / 100;
     
-    if(trackingMode === "wall-tracking" && givenSceneWidth && givenSceneHeight)
+    if(trackingMode === "wall-tracking" && inputSceneWidth && inputSceneHeight)
     {
-        if(checkLidarCoherence(inputSceneWidth, inputSceneHeight, getMaxFarFromSensors(lidarsTypes.filter(l => l.recommended), trackingMode)))
+        if(inputSceneWidth > 0 && inputSceneHeight > 0)
         {
-            sceneManager.updateWallYAugmentaSceneBorder(givenSceneWidth, givenSceneHeight);
-            document.getElementById('dimensions-warning-message').classList.add('hidden');
-            return true;
+            document.getElementById('dimensions-negative-values-warning').classList.remove('hidden');
+            if(checkLidarCoherence(givenSceneWidth, givenSceneHeight, getMaxFarFromSensors(lidarsTypes.filter(l => l.recommended), trackingMode)))
+            {
+                sceneManager.updateWallYAugmentaSceneBorder(inputSceneWidth, inputSceneHeight);
+                document.getElementById('dimensions-warning-message').classList.add('hidden');
+                return true;
+            }
+            else
+            {
+                document.getElementById('dimensions-warning-message').classList.remove('hidden');
+                return false;
+            }
         }
         else
         {
-            document.getElementById('dimensions-warning-message').classList.remove('hidden');
-            return false;
+            document.getElementById('dimensions-negative-values-warning').classList.remove('hidden');
         }
     }
-    else if(givenSceneWidth && givenSceneLength)
+    else if(inputSceneWidth && inputSceneLength)
     {
-        sceneManager.updateFloorAugmentaSceneBorder(givenSceneWidth, givenSceneLength);
-        if(inputSceneHeight > 0)
+        if(inputSceneWidth > 0 && inputSceneLength > 0)
+        {
+            document.getElementById('dimensions-negative-values-warning').classList.add('hidden');
+            sceneManager.updateFloorAugmentaSceneBorder(inputSceneWidth, inputSceneLength);
+        }
+        else
+        {
+            document.getElementById('dimensions-negative-values-warning').classList.remove('hidden');
+        }
+
+        if(givenSceneHeight > 0)
         {
             const camerasTypesRecommended = camerasTypes.filter(c => c.recommended);
             const overlapHeightDetection = trackingMode === 'human-tracking' ? SceneManager.DEFAULT_DETECTION_HEIGHT : SceneManager.HAND_TRACKING_OVERLAP_HEIGHT;
-            if(checkCameraCoherence(inputSceneHeight, overlapHeightDetection, getMaxFarFromSensors(camerasTypesRecommended, trackingMode), getMinNearFromSensors(camerasTypesRecommended)))
+            if(checkCameraCoherence(givenSceneHeight, overlapHeightDetection, getMaxFarFromSensors(camerasTypesRecommended, trackingMode), getMinNearFromSensors(camerasTypesRecommended)))
             {
                 document.getElementById('dimensions-warning-message').classList.add('hidden');
                 return true;
@@ -339,9 +360,9 @@ function initDimensionsSection()
     
 function getDimensions()
 {
-    inputWidth = Math.floor(parseFloat(document.getElementById('dimensions-width-input').value) / sceneManager.currentUnit.value * 100) / 100;
-    inputLength = Math.floor(parseFloat(document.getElementById('dimensions-length-input').value) / sceneManager.currentUnit.value * 100) / 100;
-    inputHeight = Math.floor(parseFloat(document.getElementById('dimensions-distance-input').value) / sceneManager.currentUnit.value * 100) / 100;
+    givenWidth = Math.floor(parseFloat(document.getElementById('dimensions-width-input').value) / sceneManager.currentUnit.value * 100) / 100;
+    givenLength = Math.floor(parseFloat(document.getElementById('dimensions-length-input').value) / sceneManager.currentUnit.value * 100) / 100;
+    givenHeight = Math.floor(parseFloat(document.getElementById('dimensions-distance-input').value) / sceneManager.currentUnit.value * 100) / 100;
 }
 
 document.getElementById('next-button-dimensions').addEventListener('click', () => 
@@ -350,8 +371,11 @@ document.getElementById('next-button-dimensions').addEventListener('click', () =
 
     getDimensions()
 
-    if((trackingMode !== 'wall-tracking' && ( !inputWidth || !inputLength || !inputHeight)) || 
-        (trackingMode === 'wall-tracking' && (!inputWidth || !inputHeight))) return;
+    if((trackingMode !== 'wall-tracking' && ( !givenWidth || !givenLength || !givenHeight)) || 
+        (trackingMode === 'wall-tracking' && (!givenWidth || !givenHeight))) return;
+
+    if((trackingMode !== 'wall-tracking' && (givenWidth <= 0 || givenLength <= 0 || givenHeight <= 0)) || 
+        (trackingMode === 'wall-tracking' && (givenWidth <= 0 || givenHeight <= 0))) return;
 
     initHardwareSection();
     selectFirstSensorAvailable();
@@ -376,6 +400,10 @@ document.getElementById('previous-button-dimensions').addEventListener('click', 
     sessionStorage.setItem('builderStep', 0);
 });
 
+document.getElementById('hardware-need-something-different-button').addEventListener('click', () => {
+    /* TODO: TO FORM */
+});
+
 
 /** HARDWARES SECTION */
 function resetHardwareSection()
@@ -396,7 +424,7 @@ function initHardwareSection()
     if(trackingMode === "wall-tracking")
     {
         lidarsTypes.filter(l => l.recommended).forEach(l => {
-            if(checkLidarCoherence(inputWidth, inputHeight, l.rangeFar, trackingMode))
+            if(checkLidarCoherence(givenWidth, givenHeight, l.rangeFar, trackingMode))
                 { sensorsCompatible.push(l) }
         })
     }
@@ -404,7 +432,7 @@ function initHardwareSection()
     {
         camerasTypes.filter(c => c.recommended).forEach(c => {
             const overlapHeightDetection = trackingMode === 'human-tracking' ? SceneManager.DEFAULT_DETECTION_HEIGHT : SceneManager.HAND_TRACKING_OVERLAP_HEIGHT;
-            if(checkCameraCoherence(inputHeight, overlapHeightDetection, trackingMode === 'hand-tracking' ? c.handFar : c.rangeFar, c.rangeNear))
+            if(checkCameraCoherence(givenHeight, overlapHeightDetection, trackingMode === 'hand-tracking' ? c.handFar : c.rangeFar, c.rangeNear))
                 { sensorsCompatible.push(c) }
         })
     }
@@ -476,7 +504,7 @@ function bindHardwareEventListeners(sensorsElements)
                         case 'wall-tracking':
                         {
                             const sensor = lidarsTypes.find(sensorType => sensorType.textId === sensorTextId);
-                            const config = calculateLidarConfig(sensor, inputWidth, inputHeight);
+                            const config = calculateLidarConfig(sensor, givenWidth, givenHeight);
                             if(!config){
                                 console.error('no config found with this setup');
                                 return;
@@ -490,13 +518,13 @@ function bindHardwareEventListeners(sensorsElements)
                         {
                             const sensor = camerasTypes.find(sensorType => sensorType.textId === sensorTextId);
                             const overlapHeightDetection = trackingMode === 'human-tracking' ? SceneManager.DEFAULT_DETECTION_HEIGHT : SceneManager.HAND_TRACKING_OVERLAP_HEIGHT;
-                            const config = calculateCameraConfig(trackingMode, sensor, inputWidth, inputLength, inputHeight, overlapHeightDetection);
+                            const config = calculateCameraConfig(trackingMode, sensor, givenWidth, givenLength, givenHeight, overlapHeightDetection);
                             if(!config){
                                 console.error('no config found with this setup');
                                 return;
                             }
                             sceneManager.objects.removeSensors();
-                            createSceneFromCameraConfig(config, trackingMode, inputWidth, inputLength, inputHeight + sceneManager.sceneElevation, sceneManager);
+                            createSceneFromCameraConfig(config, trackingMode, givenWidth, givenLength, givenHeight + sceneManager.sceneElevation, sceneManager);
                             break;
                         }
                         default:
@@ -693,11 +721,54 @@ function initMySystemSection()
     });
 }
 
+document.getElementById('request-quote-button-my-system').addEventListener('click', () => 
+{
+    /** DATAS THAT CAN BE USED */
+    const nbSensors = sceneManager.objects.getNbSensors();
+    const basketObject = [ { 
+        name: usedSensor.name,
+        quantity: nbSensors
+    }];
+
+    usedSensor.accessories.forEach(a => {
+        basketObject.push([ { 
+            name: a,
+            quantity: nbSensors
+        }]);
+    });
+
+    // JSON array of the basket
+    const basketJSON = JSON.stringify(basketObject);
+
+    // Name of the scene
+    const sceneName = document.getElementById('my-system-scene-name-input').value;
+
+    // Message for the scene
+    const sceneMessage = document.getElementById('my-system-scene-message-input').value;
+
+    // Designer URL : 
+    const temp = sceneManager.objects.generateLink();
+    const infosURL = temp.substring(temp.lastIndexOf('?'));
+    const designerURL = /* TODO: when designer merged and submodule is on a master commit, remove "beta." */ "https://www.beta.designer.augmenta.tech".concat(infosURL).toString();
+    console.log(designerURL);
+
+    // This blob is a file that can be loaded in augmenta Designer
+    const illegalSymbols = ['*', '.', '"', '/', '\\', '[', ']', ':', ';', '|', ',', '?', '<', '>'];
+    let fileName = sceneName;
+    illegalSymbols.forEach(s => {
+        fileName = fileName.replaceAll(s, '_');
+    });
+
+    const jsonSceneInfos = sceneManager.objects.generateJson()
+    const sceneInfosBlob = new Blob([jsonSceneInfos], { type: 'application/json' });
+    //saveAs(sceneInfosBlob, fileName + '.json'); // if you want to use it to save the file, add module FileSaver in your html : <script xmlns="http://www.w3.org/1999/xhtml" async="" src="https://cdn.rawgit.com/eligrey/FileSaver.js/5ed507ef8aa53d8ecfea96d96bc7214cd2476fd2/FileSaver.min.js"></script>
+    
+
+});
+
 document.getElementById('previous-button-my-system').addEventListener('click', () => 
 {
     resetMySystemSection();
-    
-    const sensorsDiv = document.getElementById('hardware-sensors-selection');
 
     document.getElementById('my-system-content').classList.add('hidden');
     document.getElementById('hardware-content').classList.remove('hidden');
@@ -706,7 +777,6 @@ document.getElementById('previous-button-my-system').addEventListener('click', (
 
     sessionStorage.setItem('builderStep', 2);
 });
-
 
 
 

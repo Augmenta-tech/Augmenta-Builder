@@ -78,12 +78,20 @@
             <label id="tracking-mode-advanced" class="tracking-mode-choice">
               <img id="advanced-img" src="img/advanced.png" alt="Advanced">
             </label>
-            <label id="tracking-mode-TEMPLATE-input" class="tracking-mode-choice hidden">
-              <input type="radio" name="tracking-mode-selection-builder" value="TEMPLATE">
-              <img id="TEMPLATE-img" src="img/TEMPLATE.png" alt="TEMPLATE">
+            <label id="tracking-mode-curved-wall-input" class="tracking-mode-choice hidden">
+              <input type="radio" name="tracking-mode-selection-builder" value="curved-wall">
+              <img id="curved-wall-img" src="img/curved-wall.png" alt="Curved Wall">
+            </label>
+            <label id="tracking-mode-feet-tracking-input" class="tracking-mode-choice hidden">
+              <input type="radio" name="tracking-mode-selection-builder" value="feet-tracking">
+              <img id="feet-tracking-img" src="img/feet-tracking.png" alt="Feet tracking">
+            </label>
+            <label id="tracking-mode-fast-objects-tracking-input" class="tracking-mode-choice hidden">
+              <input type="radio" name="tracking-mode-selection-builder" value="fast-objects-tracking">
+              <img id="fast-objects-tracking-img" src="img/fast-objects-tracking.png" alt="Fast objects">
             </label>
           </div>
-          <div id="setup-warning-message" class="row hidden">
+          <div id="setup-warning-message" class="row center-x hidden">
             <p id="setup-warning-text" class="warning-text">Please choose a surface to track</p>
           </div>
 
@@ -133,8 +141,11 @@
                 </div>
               </div>
             </div>
-            <div id="dimensions-warning-message" class="row hidden">
+            <div id="dimensions-warning-message" class="row center-x wrap hidden">
               <p id="dimensions-warning-text" class="warning-text">No hardware setup found,</p><p id="dimensions-warning-button" class="text-button">click here to get in touch with our experts.</p>
+            </div>
+            <div id="dimensions-negative-values-warning" class="row center-x wrap hidden">
+              <p id="dimensions-negative-values-warning-text" class="warning-text">Please enter positive values.</p>
             </div>
           </div>
           <!-- DIMENSIONS BUTTONS-->
@@ -178,7 +189,7 @@
             <div id="hardware-sensors-selection" class="row wrap center-x center-y">
               <!-- FILLED IN JS WITH CORRECT SENSORS -->
             </div>
-            <div id="hardware-warning-message" class="row hidden setup-warning-message">
+            <div id="hardware-warning-message" class="row center-x wrap hidden">
               <p id="hardware-warning-text" class="warning-text">No hardware setup found,</p><p id="hardware-warning-button" class="text-button">click here to get in touch with our experts.</p>
             </div>
           </div>
@@ -206,7 +217,7 @@
         <div id="my-system-content" class="column builder-section hidden">
           <!-- RECAP -->
           <div id="my-system-section-builder" class="row center-x center-y builder-section-content">
-            <div id="my-system-scene-infos" class="row center-x my-system-section my-system-line">
+            <div id="my-system-scene-infos" class="row center-x center-y my-system-section my-system-line">
               <div id="my-system-tracking-mode" class="column center-x center-y ">
                 <!-- FILLED IN JS WITH CHOSEN CONFIG -->
               </div>
@@ -216,6 +227,10 @@
             </div>
             <div id="my-system-recap" class="column center-y my-system-section my-system-line">
               <!-- FILLED IN JS WITH CHOSEN CONFIG -->
+            </div>
+            <div id="my-system-name-message" class="column center-y my-system-section ">
+              <input id="my-system-scene-name-input" type="text" placeholder="Your scene name">
+              <textarea id="my-system-scene-message-input" spellcheck="false" placeholder="Please write us a message to complete your demand."></textarea>
             </div>
           </div>
           <!-- MY SYSTEM BUTTONS-->
